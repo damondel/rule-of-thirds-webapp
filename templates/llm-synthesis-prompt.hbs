@@ -1,0 +1,92 @@
+# LLM Analysis Synthesis Prompt
+
+You are an expert strategic analyst tasked with synthesizing comprehensive product intelligence from three parallel data sources. Analyze the provided data and generate actionable strategic insights.
+
+## Context
+- **Topic:** {{topic}}
+{{#if productArea}}- **Product Area:** {{productArea}}{{/if}}
+- **Analysis Date:** {{timestamp}}
+- **Total Data Points:** {{totalDataPoints}}
+
+## Data Sources Analyzed
+
+### 1. External Market Signals ({{externalSignals.signalCount}} signals)
+{{#if externalSignals.rankedSignals}}
+**Key External Intelligence:**
+{{#each externalSignals.rankedSignals}}
+- {{title}} (Relevance: {{relevanceScore}})
+  Source: {{source}} | {{publishedAt}}
+  {{content}}
+
+{{/each}}
+{{/if}}
+
+### 2. Internal Research Findings ({{internalResearch.findingCount}} findings)
+{{#if internalResearch.rankedFindings}}
+**Internal Intelligence:**
+{{#each internalResearch.rankedFindings}}
+- {{content}}
+  Source: {{source}} (Type: {{metadata.fileType}})
+
+{{/each}}
+{{/if}}
+
+### 3. Product Metrics & Analytics ({{productMetrics.dataPointCount}} data points)
+{{#if productMetrics.insights}}
+**Performance Insights:**
+{{#each productMetrics.insights.trends}}
+- {{metric}}: {{direction}} trend ({{percentChange}}% change)
+{{/each}}
+
+**Key Findings:**
+{{#each productMetrics.insights.keyFindings}}
+- {{description}}: {{value}}
+{{/each}}
+{{/if}}
+
+## Analysis Instructions
+
+Please provide a comprehensive strategic analysis addressing the following:
+
+### 1. Market Positioning Analysis
+- How does the external market intelligence position {{topic}} in the current landscape?
+- What competitive dynamics and opportunities are revealed?
+- What market trends should inform strategic decisions?
+
+### 2. Internal Capability Assessment  
+- What internal research insights support or challenge market assumptions?
+- What organizational knowledge and capabilities are relevant?
+- Are there gaps between external opportunities and internal readiness?
+
+### 3. Performance Reality Check
+- How do current product metrics align with market expectations?
+- What performance trends validate or contradict strategic hypotheses?
+- Where do metrics suggest focus areas for improvement?
+
+### 4. Strategic Synthesis
+- What are the 3-5 most critical insights that emerge from cross-referencing all three data sources?
+- Where do external signals, internal research, and product metrics converge or diverge?
+- What strategic tensions or opportunities require leadership attention?
+
+### 5. Actionable Recommendations
+- **Immediate (0-30 days):** What urgent actions should be taken based on this intelligence?
+- **Short-term (1-6 months):** What tactical initiatives should be prioritized?
+- **Long-term (6+ months):** What strategic bets or pivots should be considered?
+
+### 6. Intelligence Gaps & Next Steps
+- What critical information is missing from this analysis?
+- What additional research or data collection should be prioritized?
+- How should this intelligence gathering process be refined?
+
+## Output Format
+Structure your response as a strategic brief suitable for executive review, with clear sections, bullet points, and specific recommendations backed by the provided data.
+
+Focus on actionable insights rather than data summarization. Highlight contradictions, patterns, and strategic implications that only emerge when viewing all three data sources together.
+
+---
+
+*Data Collection Metadata:*
+- External Signals Execution: {{externalSignals.executionTime}}ms
+- Internal Research Execution: {{internalResearch.executionTime}}ms  
+- Product Metrics Execution: {{productMetrics.executionTime}}ms
+- Total Analysis Time: {{totalExecutionTime}}ms

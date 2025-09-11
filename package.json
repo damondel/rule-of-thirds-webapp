@@ -1,0 +1,39 @@
+{
+  "name": "rule-of-thirds-mcp-server",
+  "version": "1.0.0",
+  "description": "A Model Context Protocol server for Rule of Thirds signal orchestration",
+  "type": "module",
+  "main": "build/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/server.js",
+    "dev": "tsc && node build/index.js",
+    "demo": "npm run build && node demo.js",
+    "test": "npm run build && node test/basic-test.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "rule-of-thirds",
+    "signal-orchestration",
+    "product-intelligence",
+    "external-signals",
+    "internal-research",
+    "product-metrics"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.2",
+    "node-fetch": "^3.3.2",
+    "rss-parser": "^3.13.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
