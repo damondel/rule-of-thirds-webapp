@@ -303,14 +303,16 @@ body {
 .connection-line {
   stroke: var(--text-secondary);
   stroke-width: 3;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
   transition: stroke-dashoffset 1s ease-in-out;
   opacity: 0.8;
+  visibility: hidden;
 }
 
 .connection-line.drawn {
   stroke-dashoffset: 0;
+  visibility: visible;
 }
 
 /* Completion triangle */
