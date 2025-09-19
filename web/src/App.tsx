@@ -2,9 +2,20 @@ import React, { useState } from 'react';
 import './index.css';
 
 interface AgentStatus {
-  external: 'idle' | 'running' | 'success' | 'failed';
-  internal: 'idle' | 'running' | 'success' | 'failed';
-  product: 'idle' | 'running' | 'success' | 'failed';
+  market: 'idle' | 'active' | 'complete' | 'failed';
+  metrics: 'idle' | 'active' | 'complete' | 'failed';
+  research: 'idle' | 'active' | 'complete' | 'failed';
+}
+
+interface AnimationState {
+  marketActive: boolean;
+  metricsActive: boolean;
+  researchActive: boolean;
+  marketComplete: boolean;
+  metricsComplete: boolean;
+  researchComplete: boolean;
+  line1Drawn: boolean;
+  line2Drawn: boolean;
 }
 
 interface AnalysisResult {
@@ -25,9 +36,19 @@ function App() {
   const [focusArea, setFocusArea] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [agentStatus, setAgentStatus] = useState<AgentStatus>({
-    external: 'idle',
-    internal: 'idle',
-    product: 'idle'
+    market: 'idle',
+    metrics: 'idle',
+    research: 'idle'
+  });
+  const [animationState, setAnimationState] = useState<AnimationState>({
+    marketActive: false,
+    metricsActive: false,
+    researchActive: false,
+    marketComplete: false,
+    metricsComplete: false,
+    researchComplete: false,
+    line1Drawn: false,
+    line2Drawn: false
   });
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
@@ -44,14 +65,30 @@ function App() {
     setAnalysisComplete(false);
     setResults(null);
     
-    // Set all agents to running state
+    // Reset animation state
     setAgentStatus({
-      external: 'running',
-      internal: 'running',
-      product: 'running'
+      market: 'idle',
+      metrics: 'idle',
+      research: 'idle'
+    });
+    setAnimationState({
+      marketActive: false,
+      metricsActive: false,
+      researchActive: false,
+      marketComplete: false,
+      metricsComplete: false,
+      researchComplete: false,
+      line1Drawn: false,
+      line2Drawn: false
     });
 
     try {
+      // Start sequential animation - Market first
+      setTimeout(() => {
+        setAgentStatus(prev => ({ ...prev, market: 'active' }));
+        setAnimationState(prev => ({ ...prev, marketActive: true }));
+      }, 500);
+
       const response = await fetch('/api/orchestrate', {
         method: 'POST',
         headers: {
@@ -70,28 +107,65 @@ function App() {
       const result: AnalysisResult = await response.json();
       setResults(result);
 
-      // Update agent statuses based on results
-      const newStatus: AgentStatus = {
-        external: result.signals.external.status === 'success' ? 'success' : 'failed',
-        internal: result.signals.internal.status === 'success' ? 'success' : 'failed',
-        product: result.signals.product.status === 'success' ? 'success' : 'failed'
-      };
-      
-      setAgentStatus(newStatus);
-      
-      // Show triangle if analysis was successful
-      if (result.success) {
+      // Sequential animation progression
+      setTimeout(() => {
+        // Market complete, draw line to metrics
+        setAgentStatus(prev => ({ ...prev, market: 'complete' }));
+        setAnimationState(prev => ({ 
+          ...prev, 
+          marketActive: false, 
+          marketComplete: true, 
+          line1Drawn: true 
+        }));
+        
+        // Start metrics animation
         setTimeout(() => {
-          setAnalysisComplete(true);
-        }, 500); // Small delay for visual effect
+          setAgentStatus(prev => ({ ...prev, metrics: 'active' }));
+          setAnimationState(prev => ({ ...prev, metricsActive: true }));
+          
+          setTimeout(() => {
+            // Metrics complete, draw line to research
+            setAgentStatus(prev => ({ ...prev, metrics: 'complete' }));
+            setAnimationState(prev => ({ 
+              ...prev, 
+              metricsActive: false, 
+              metricsComplete: true, 
+              line2Drawn: true 
+            }));
+            
+            // Start research animation
+            setTimeout(() => {
+              setAgentStatus(prev => ({ ...prev, research: 'active' }));
+              setAnimationState(prev => ({ ...prev, researchActive: true }));
+              
+              setTimeout(() => {
+                // Research complete, show triangle
+                setAgentStatus(prev => ({ ...prev, research: 'complete' }));
+                setAnimationState(prev => ({ 
+                  ...prev, 
+                  researchActive: false, 
+                  researchComplete: true 
+                }));
+                
+                setTimeout(() => {
+                  setAnalysisComplete(true);
+                }, 300);
+              }, 1500);
+            }, 500);
+          }, 1500);
+        }, 500);
+      }, 1500);
+
+      if (result.success) {
+        // Analysis successful - animations will handle the rest
       }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Analysis failed');
       setAgentStatus({
-        external: 'failed',
-        internal: 'failed',
-        product: 'failed'
+        market: 'failed',
+        metrics: 'failed',
+        research: 'failed'
       });
     } finally {
       setIsAnalyzing(false);
@@ -100,8 +174,8 @@ function App() {
 
   const getDotClass = (status: string) => {
     switch (status) {
-      case 'running': return 'dot running';
-      case 'success': return 'dot success';
+      case 'active': return 'dot active';
+      case 'complete': return 'dot complete';
       case 'failed': return 'dot failed';
       default: return 'dot idle';
     }
@@ -109,9 +183,19 @@ function App() {
 
   const resetAnalysis = () => {
     setAgentStatus({
-      external: 'idle',
-      internal: 'idle',
-      product: 'idle'
+      market: 'idle',
+      metrics: 'idle',
+      research: 'idle'
+    });
+    setAnimationState({
+      marketActive: false,
+      metricsActive: false,
+      researchActive: false,
+      marketComplete: false,
+      metricsComplete: false,
+      researchComplete: false,
+      line1Drawn: false,
+      line2Drawn: false
     });
     setAnalysisComplete(false);
     setResults(null);
@@ -122,8 +206,8 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>🔺 Rule of Thirds</h1>
-        <p>Product Intelligence Analysis</p>
+        <h1>Rule of Thirds</h1>
+        <p>Strategic Insights Orchestration</p>
       </header>
 
       <div className="controls">
@@ -183,17 +267,33 @@ function App() {
           <div className="grid-line horizontal line-2"></div>
           
           {/* Agent dots positioned at rule of thirds intersections */}
-          <div className={`${getDotClass(agentStatus.external)} external-dot`} title="External Market Intelligence">
+          <div className={`${getDotClass(agentStatus.market)} market-dot`} title="Market Intelligence">
             <span className="dot-label">Market</span>
           </div>
           
-          <div className={`${getDotClass(agentStatus.internal)} internal-dot`} title="Internal Research Analysis">
-            <span className="dot-label">Research</span>
-          </div>
-          
-          <div className={`${getDotClass(agentStatus.product)} product-dot`} title="Product Metrics & Analytics">
+          <div className={`${getDotClass(agentStatus.metrics)} metrics-dot`} title="Product Metrics & Analytics">
             <span className="dot-label">Metrics</span>
           </div>
+          
+          <div className={`${getDotClass(agentStatus.research)} research-dot`} title="Internal Research Analysis">
+            <span className="dot-label">Research</span>
+          </div>
+
+          {/* Connection lines */}
+          <svg className="connection-lines" viewBox="0 0 600 400">
+            {/* Line from Market to Metrics */}
+            <line 
+              x1="300" y1="133" 
+              x2="300" y2="200" 
+              className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
+            />
+            {/* Line from Metrics to Research */}
+            <line 
+              x1="300" y1="200" 
+              x2="300" y2="267" 
+              className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
+            />
+          </svg>
 
           {/* Triangle appears when analysis is complete */}
           {analysisComplete && (
@@ -214,7 +314,7 @@ function App() {
           <h3>Analysis Results</h3>
           <div className="results-grid">
             <div className="result-card">
-              <h4>🌐 Market Intelligence</h4>
+              <h4>📊 Market Intelligence</h4>
               <p>{results.signals.external.signalCount} signals collected</p>
               <span className={`status ${results.signals.external.status}`}>
                 {results.signals.external.status}
@@ -222,18 +322,18 @@ function App() {
             </div>
             
             <div className="result-card">
-              <h4>📚 Internal Research</h4>
-              <p>{results.signals.internal.findingCount} findings analyzed</p>
-              <span className={`status ${results.signals.internal.status}`}>
-                {results.signals.internal.status}
+              <h4>📈 Product Metrics</h4>
+              <p>{results.signals.product.dataPointCount} data points</p>
+              <span className={`status ${results.signals.product.status}`}>
+                {results.signals.product.status}
               </span>
             </div>
             
             <div className="result-card">
-              <h4>📊 Product Metrics</h4>
-              <p>{results.signals.product.dataPointCount} data points</p>
-              <span className={`status ${results.signals.product.status}`}>
-                {results.signals.product.status}
+              <h4>🔍 Internal Research</h4>
+              <p>{results.signals.internal.findingCount} findings analyzed</p>
+              <span className={`status ${results.signals.internal.status}`}>
+                {results.signals.internal.status}
               </span>
             </div>
           </div>
