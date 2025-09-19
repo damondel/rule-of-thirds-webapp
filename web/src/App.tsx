@@ -213,7 +213,7 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>Rule of Thirds</h1>
-        <p>Strategic Insights Orchestration</p>
+        <p>From scattered signals to a sharper product picture</p>
       </header>
 
       <div className="controls">

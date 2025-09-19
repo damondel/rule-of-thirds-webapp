@@ -238,48 +238,64 @@ body {
 
 /* Specific colors for each agent */
 .market-dot {
-  background: #3b82f6; /* Pure blue - RGB blue channel */
-  border-color: #1d4ed8;
+  background: #3b82f6 !important; /* Pure blue - RGB blue channel */
+  border-color: #1d4ed8 !important;
 }
 
 .market-dot.active {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-  background: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
+  background: #3b82f6 !important;
 }
 
 .market-dot.complete {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-  background: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
+  background: #3b82f6 !important;
 }
 
 .research-dot {
-  background: #ef4444; /* Pure red - RGB red channel */
-  border-color: #dc2626;
+  background: #ef4444 !important; /* Pure red - RGB red channel */
+  border-color: #dc2626 !important;
 }
 
 .research-dot.active {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-  background: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
+  background: #ef4444 !important;
 }
 
 .research-dot.complete {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-  background: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
+  background: #ef4444 !important;
 }
 
 .product-dot {
-  background: #10b981; /* Pure green - RGB green channel */
-  border-color: #059669;
+  background: #10b981 !important; /* Pure green - RGB green channel */
+  border-color: #059669 !important;
 }
 
 .product-dot.active {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-  background: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6) !important;
+  background: #10b981 !important;
 }
 
 .product-dot.complete {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-  background: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+  background: #10b981 !important;
+}
+
+/* Override any generic dot styles that might be interfering */
+.dot.idle.market-dot {
+  background: #3b82f6 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.dot.idle.research-dot {
+  background: #ef4444 !important;
+  border-color: #dc2626 !important;
+}
+
+.dot.idle.product-dot {
+  background: #10b981 !important;
+  border-color: #059669 !important;
 }
 
 /* Position dots to form triangle */
