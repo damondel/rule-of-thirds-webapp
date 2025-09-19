@@ -66,7 +66,7 @@ body {
 }
 
 .controls {
-  flex: 0 0 300px; /* Fixed width, smaller than grid */
+  flex: 0 0 400px; /* Expanded width to better fill space */
   background: var(--surface);
   padding: 2rem;
   border-radius: 1rem;
