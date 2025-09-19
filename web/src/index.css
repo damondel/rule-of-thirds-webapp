@@ -238,39 +238,48 @@ body {
 
 /* Specific colors for each agent */
 .market-dot {
-  background: var(--market-color);
+  background: #3b82f6; /* Pure blue - RGB blue channel */
+  border-color: #1d4ed8;
 }
 
 .market-dot.active {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+  background: #3b82f6;
 }
 
 .market-dot.complete {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  background: #3b82f6;
 }
 
 .research-dot {
-  background: var(--research-color);
+  background: #ef4444; /* Pure red - RGB red channel */
+  border-color: #dc2626;
 }
 
 .research-dot.active {
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+  background: #ef4444;
 }
 
 .research-dot.complete {
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  background: #ef4444;
 }
 
 .product-dot {
-  background: var(--product-color);
+  background: #10b981; /* Pure green - RGB green channel */
+  border-color: #059669;
 }
 
 .product-dot.active {
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  background: #10b981;
 }
 
 .product-dot.complete {
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  background: #10b981;
 }
 
 /* Position dots to form triangle */
@@ -303,16 +312,15 @@ body {
 .connection-line {
   stroke: var(--text-secondary);
   stroke-width: 3;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  transition: stroke-dashoffset 1s ease-in-out;
+  stroke-dasharray: 0;
+  stroke-dashoffset: 0;
+  transition: opacity 0.5s ease-in-out;
   opacity: 0.8;
-  visibility: hidden;
+  opacity: 0;
 }
 
 .connection-line.drawn {
-  stroke-dashoffset: 0;
-  visibility: visible;
+  opacity: 0.8;
 }
 
 /* Completion triangle */
