@@ -178,7 +178,12 @@ export class RuleOfThirdsHttpServer {
 // Main entry point when run directly
 async function main() {
     try {
+        console.log('🚀 Backend server script starting...');
+        console.log('📁 Current working directory:', process.cwd());
+        console.log('📦 Node version:', process.version);
+        
         const server = new RuleOfThirdsHttpServer(3001);
+        console.log('🔧 Server instance created, attempting to start...');
         await server.start();
         
         // Handle graceful shutdown
@@ -194,6 +199,11 @@ async function main() {
         
     } catch (error) {
         console.error('💥 Failed to start HTTP server:', error);
+        console.error('📋 Error details:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code
+        });
         process.exit(1);
     }
 }
