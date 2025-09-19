@@ -289,13 +289,13 @@ function App() {
           <svg className="connection-lines" viewBox="0 0 600 400">
             {/* Line from Market to Research */}
             <line 
-              x1="100" y1="67" 
-              x2="500" y2="67" 
+             x1="100" y1="67" 
+             x2="500" y2="200" 
               className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
             />
             {/* Line from Research to Product */}
             <line 
-              x1="500" y1="67" 
+             x1="500" y1="200" 
               x2="300" y2="333" 
               className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
             />

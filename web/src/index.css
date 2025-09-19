@@ -280,7 +280,7 @@ body {
 }
 
 .research-dot {
-  top: 16.67%; /* Top row */
+  top: 50%; /* Middle row */
   left: 83.33%; /* Right column */
 }
 
