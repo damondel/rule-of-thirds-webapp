@@ -21,7 +21,20 @@ export class RuleOfThirdsHttpServer {
     constructor(port: number = 3001) {
         this.app = express();
         this.port = port;
-        this.orchestrator = new RuleOfThirdsOrchestrator();
+        
+        try {
+            console.log('🔧 Initializing RuleOfThirdsOrchestrator...');
+            this.orchestrator = new RuleOfThirdsOrchestrator();
+            console.log('✅ RuleOfThirdsOrchestrator initialized successfully');
+        } catch (error) {
+            console.error('❌ Failed to initialize RuleOfThirdsOrchestrator:', error);
+            console.error('📋 Error details:', {
+                message: error.message,
+                stack: error.stack,
+                code: error.code
+            });
+            throw error;
+        }
         
         this.setupMiddleware();
         this.setupRoutes();
