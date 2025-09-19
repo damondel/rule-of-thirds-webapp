@@ -9,7 +9,7 @@
     "start": "node build/server.js",
     "dev": "tsc && node build/server.js", 
     "start:web": "tsc && node build/httpServer.js",
-    "build:web": "npm run build && cd web && npm run build",
+    "build:web": "npm run build && npm --prefix web run build",
     "demo": "npm run build && node demo.js",
     "test": "npm run build && node test/basic-test.js"
   },
