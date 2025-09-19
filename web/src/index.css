@@ -71,7 +71,10 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   border: 1px solid var(--border);
-  height: fit-content; /* Don't stretch to match grid height */
+  height: 467px; /* Match grid height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .input-group {
