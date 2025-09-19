@@ -14,7 +14,7 @@ import fetch from 'node-fetch';
 // Helper function to log only when not in MCP silent mode
 function log(...args: any[]): void {
     if (!process.env.MCP_SILENT) {
-        log(...args);
+        console.log(...args);
     }
 }
 
