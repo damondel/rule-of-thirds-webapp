@@ -10,6 +10,11 @@
   --text-secondary: #cbd5e1;
   --border: #475569;
   --grid-line: rgba(148, 163, 184, 0.3);
+  
+  /* RGB-inspired agent colors */
+  --market-color: #3b82f6;      /* Blue */
+  --research-color: #ef4444;    /* Red */
+  --product-color: #10b981;     /* Green */
 }
 
 * {
@@ -216,16 +221,12 @@ body {
 }
 
 .dot.active {
-  background: var(--warning-color);
-  border: 2px solid #d97706;
+  border: 2px solid rgba(255, 255, 255, 0.8);
   animation: activeRing 1.5s ease-in-out infinite;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
 }
 
 .dot.complete {
-  background: var(--success-color);
-  border: 2px solid #059669;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.9);
   animation: completeGlow 0.6s ease-out;
 }
 
@@ -235,19 +236,56 @@ body {
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
-/* Position dots in center of grid squares */
+/* Specific colors for each agent */
 .market-dot {
-  top: 16.67%; /* Center of top row */
-  left: 50%;   /* Center horizontally */
+  background: var(--market-color);
 }
 
-.metrics-dot {
-  top: 50%;    /* Center of middle row */
-  left: 50%;   /* Center horizontally */
+.market-dot.active {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+.market-dot.complete {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
 .research-dot {
-  top: 83.33%; /* Center of bottom row */
+  background: var(--research-color);
+}
+
+.research-dot.active {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+
+.research-dot.complete {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+.product-dot {
+  background: var(--product-color);
+}
+
+.product-dot.active {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.product-dot.complete {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Position dots to form triangle */
+.market-dot {
+  top: 16.67%; /* Top row */
+  left: 16.67%; /* Left column */
+}
+
+.research-dot {
+  top: 16.67%; /* Top row */
+  left: 83.33%; /* Right column */
+}
+
+.product-dot {
+  top: 83.33%; /* Bottom row */
   left: 50%;   /* Center horizontally */
 }
 
@@ -263,7 +301,7 @@ body {
 }
 
 .connection-line {
-  stroke: var(--primary-color);
+  stroke: var(--text-secondary);
   stroke-width: 3;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;

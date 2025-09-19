@@ -3,19 +3,20 @@ import './index.css';
 
 interface AgentStatus {
   market: 'idle' | 'active' | 'complete' | 'failed';
-  metrics: 'idle' | 'active' | 'complete' | 'failed';
+  product: 'idle' | 'active' | 'complete' | 'failed';
   research: 'idle' | 'active' | 'complete' | 'failed';
 }
 
 interface AnimationState {
   marketActive: boolean;
-  metricsActive: boolean;
+  productActive: boolean;
   researchActive: boolean;
   marketComplete: boolean;
-  metricsComplete: boolean;
+  productComplete: boolean;
   researchComplete: boolean;
   line1Drawn: boolean;
   line2Drawn: boolean;
+  line3Drawn: boolean;
 }
 
 interface AnalysisResult {
@@ -37,18 +38,19 @@ function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [agentStatus, setAgentStatus] = useState<AgentStatus>({
     market: 'idle',
-    metrics: 'idle',
+    product: 'idle',
     research: 'idle'
   });
   const [animationState, setAnimationState] = useState<AnimationState>({
     marketActive: false,
-    metricsActive: false,
+    productActive: false,
     researchActive: false,
     marketComplete: false,
-    metricsComplete: false,
+    productComplete: false,
     researchComplete: false,
     line1Drawn: false,
-    line2Drawn: false
+    line2Drawn: false,
+    line3Drawn: false
   });
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
@@ -68,22 +70,23 @@ function App() {
     // Reset animation state
     setAgentStatus({
       market: 'idle',
-      metrics: 'idle',
+      product: 'idle',
       research: 'idle'
     });
     setAnimationState({
       marketActive: false,
-      metricsActive: false,
+      productActive: false,
       researchActive: false,
       marketComplete: false,
-      metricsComplete: false,
+      productComplete: false,
       researchComplete: false,
       line1Drawn: false,
-      line2Drawn: false
+      line2Drawn: false,
+      line3Drawn: false
     });
 
     try {
-      // Start sequential animation - Market first
+      // Start triangular animation - Market first
       setTimeout(() => {
         setAgentStatus(prev => ({ ...prev, market: 'active' }));
         setAnimationState(prev => ({ ...prev, marketActive: true }));
@@ -107,9 +110,9 @@ function App() {
       const result: AnalysisResult = await response.json();
       setResults(result);
 
-      // Sequential animation progression
+      // Triangular animation progression
       setTimeout(() => {
-        // Market complete, draw line to metrics
+        // Market complete, draw line to research
         setAgentStatus(prev => ({ ...prev, market: 'complete' }));
         setAnimationState(prev => ({ 
           ...prev, 
@@ -118,33 +121,40 @@ function App() {
           line1Drawn: true 
         }));
         
-        // Start metrics animation
+        // Start research animation
         setTimeout(() => {
-          setAgentStatus(prev => ({ ...prev, metrics: 'active' }));
-          setAnimationState(prev => ({ ...prev, metricsActive: true }));
+          setAgentStatus(prev => ({ ...prev, research: 'active' }));
+          setAnimationState(prev => ({ ...prev, researchActive: true }));
           
           setTimeout(() => {
-            // Metrics complete, draw line to research
-            setAgentStatus(prev => ({ ...prev, metrics: 'complete' }));
+            // Research complete, draw line to product
+            setAgentStatus(prev => ({ ...prev, research: 'complete' }));
             setAnimationState(prev => ({ 
               ...prev, 
-              metricsActive: false, 
-              metricsComplete: true, 
+              researchActive: false, 
+              researchComplete: true, 
               line2Drawn: true 
             }));
             
-            // Start research animation
+            // Start product animation
             setTimeout(() => {
-              setAgentStatus(prev => ({ ...prev, research: 'active' }));
-              setAnimationState(prev => ({ ...prev, researchActive: true }));
+              setAgentStatus(prev => ({ ...prev, product: 'active' }));
+              setAnimationState(prev => ({ ...prev, productActive: true }));
               
               setTimeout(() => {
-                // Research complete, show triangle
-                setAgentStatus(prev => ({ ...prev, research: 'complete' }));
+                // Product complete, draw final line back to market (completing triangle)
+                setAgentStatus(prev => ({ ...prev, product: 'complete' }));
                 setAnimationState(prev => ({ 
                   ...prev, 
-                  researchActive: false, 
-                  researchComplete: true 
+                  productActive: false, 
+                  productComplete: true,
+                  line3Drawn: true
+                }));
+                
+                // Show completion triangle
+                setTimeout(() => {
+                  setAnalysisComplete(true);
+                }, 300);
                 }));
                 
                 setTimeout(() => {
@@ -164,7 +174,7 @@ function App() {
       setError(err instanceof Error ? err.message : 'Analysis failed');
       setAgentStatus({
         market: 'failed',
-        metrics: 'failed',
+        product: 'failed',
         research: 'failed'
       });
     } finally {
@@ -184,18 +194,19 @@ function App() {
   const resetAnalysis = () => {
     setAgentStatus({
       market: 'idle',
-      metrics: 'idle',
+      product: 'idle',
       research: 'idle'
     });
     setAnimationState({
       marketActive: false,
-      metricsActive: false,
+      productActive: false,
       researchActive: false,
       marketComplete: false,
-      metricsComplete: false,
+      productComplete: false,
       researchComplete: false,
       line1Drawn: false,
-      line2Drawn: false
+      line2Drawn: false,
+      line3Drawn: false
     });
     setAnalysisComplete(false);
     setResults(null);
@@ -271,27 +282,33 @@ function App() {
             <span className="dot-label">Market</span>
           </div>
           
-          <div className={`${getDotClass(agentStatus.metrics)} metrics-dot`} title="Product Metrics & Analytics">
-            <span className="dot-label">Metrics</span>
-          </div>
-          
           <div className={`${getDotClass(agentStatus.research)} research-dot`} title="Internal Research Analysis">
             <span className="dot-label">Research</span>
+          </div>
+          
+          <div className={`${getDotClass(agentStatus.product)} product-dot`} title="Product Metrics & Analytics">
+            <span className="dot-label">Product</span>
           </div>
 
           {/* Connection lines */}
           <svg className="connection-lines" viewBox="0 0 600 400">
-            {/* Line from Market to Metrics */}
+            {/* Line from Market to Research */}
             <line 
-              x1="300" y1="133" 
-              x2="300" y2="200" 
+              x1="100" y1="67" 
+              x2="500" y2="67" 
               className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
             />
-            {/* Line from Metrics to Research */}
+            {/* Line from Research to Product */}
             <line 
-              x1="300" y1="200" 
-              x2="300" y2="267" 
+              x1="500" y1="67" 
+              x2="300" y2="333" 
               className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
+            />
+            {/* Line from Product back to Market (completing triangle) */}
+            <line 
+              x1="300" y1="333" 
+              x2="100" y2="67" 
+              className={`connection-line ${animationState.line3Drawn ? 'drawn' : ''}`}
             />
           </svg>
 
@@ -322,18 +339,18 @@ function App() {
             </div>
             
             <div className="result-card">
-              <h4>📈 Product Metrics</h4>
-              <p>{results.signals.product.dataPointCount} data points</p>
-              <span className={`status ${results.signals.product.status}`}>
-                {results.signals.product.status}
-              </span>
-            </div>
-            
-            <div className="result-card">
               <h4>🔍 Internal Research</h4>
               <p>{results.signals.internal.findingCount} findings analyzed</p>
               <span className={`status ${results.signals.internal.status}`}>
                 {results.signals.internal.status}
+              </span>
+            </div>
+            
+            <div className="result-card">
+              <h4>📈 Product Analytics</h4>
+              <p>{results.signals.product.dataPointCount} data points</p>
+              <span className={`status ${results.signals.product.status}`}>
+                {results.signals.product.status}
               </span>
             </div>
           </div>
