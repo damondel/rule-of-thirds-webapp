@@ -216,108 +216,110 @@ function App() {
         <p>From scattered signals to a sharper product picture</p>
       </header>
 
-      <div className="controls">
-        <div className="input-group">
-          <label htmlFor="topic">Analysis Topic</label>
-          <input
-            id="topic"
-            type="text"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder="e.g., AI productivity tools, mobile banking apps"
-            disabled={isAnalyzing}
-          />
-        </div>
-        
-        <div className="input-group">
-          <label htmlFor="focus">Focus Area (Optional)</label>
-          <input
-            id="focus"
-            type="text"
-            value={focusArea}
-            onChange={(e) => setFocusArea(e.target.value)}
-            placeholder="e.g., user experience, competitive analysis"
-            disabled={isAnalyzing}
-          />
-        </div>
-
-        <div className="button-group">
-          <button 
-            onClick={handleAnalyze} 
-            disabled={isAnalyzing || !topic.trim()}
-            className="analyze-btn"
-          >
-            {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-          </button>
-          
-          {(results || error) && (
-            <button onClick={resetAnalysis} className="reset-btn">
-              Reset
-            </button>
-          )}
-        </div>
-      </div>
-
       {error && (
         <div className="error">
           <p>❌ {error}</p>
         </div>
       )}
 
-      <div className="rule-of-thirds-container">
-        <div className="rule-of-thirds-grid">
-          {/* Grid lines */}
-          <div className="grid-line vertical line-1"></div>
-          <div className="grid-line vertical line-2"></div>
-          <div className="grid-line horizontal line-1"></div>
-          <div className="grid-line horizontal line-2"></div>
-          
-          {/* Agent dots positioned at rule of thirds intersections */}
-          <div className={`${getDotClass(agentStatus.market)} market-dot`} title="Market Intelligence">
-            <span className="dot-label">Market</span>
+      <div className="main-content">
+        <div className="controls">
+          <div className="input-group">
+            <label htmlFor="topic">Analysis Topic</label>
+            <input
+              id="topic"
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g., AI productivity tools, mobile banking apps"
+              disabled={isAnalyzing}
+            />
           </div>
           
-          <div className={`${getDotClass(agentStatus.research)} research-dot`} title="Internal Research Analysis">
-            <span className="dot-label">Research</span>
-          </div>
-          
-          <div className={`${getDotClass(agentStatus.product)} product-dot`} title="Product Metrics & Analytics">
-            <span className="dot-label">Product</span>
+          <div className="input-group">
+            <label htmlFor="focus">Focus Area (Optional)</label>
+            <input
+              id="focus"
+              type="text"
+              value={focusArea}
+              onChange={(e) => setFocusArea(e.target.value)}
+              placeholder="e.g., user experience, competitive analysis"
+              disabled={isAnalyzing}
+            />
           </div>
 
-          {/* Connection lines */}
-          <svg className="connection-lines" viewBox="0 0 600 400">
-            {/* Line from Market to Research */}
-            <line 
-             x1="100" y1="67" 
-             x2="500" y2="200" 
-              className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
-            />
-            {/* Line from Research to Product */}
-            <line 
-             x1="500" y1="200" 
-              x2="300" y2="333" 
-              className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
-            />
-            {/* Line from Product back to Market (completing triangle) */}
-            <line 
-              x1="300" y1="333" 
-              x2="100" y2="67" 
-              className={`connection-line ${animationState.line3Drawn ? 'drawn' : ''}`}
-            />
-          </svg>
+          <div className="button-group">
+            <button 
+              onClick={handleAnalyze} 
+              disabled={isAnalyzing || !topic.trim()}
+              className="analyze-btn"
+            >
+              {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
+            </button>
+            
+            {(results || error) && (
+              <button onClick={resetAnalysis} className="reset-btn">
+                Reset
+              </button>
+            )}
+          </div>
+        </div>
 
-          {/* Triangle appears when analysis is complete */}
-          {analysisComplete && (
-            <div className="completion-triangle">
-              <svg viewBox="0 0 100 100" className="triangle-svg">
-                <polygon 
-                  points="50,15 85,75 15,75" 
-                  className="triangle-shape"
-                />
-              </svg>
+        <div className="rule-of-thirds-container">
+          <div className="rule-of-thirds-grid">
+            {/* Grid lines */}
+            <div className="grid-line vertical line-1"></div>
+            <div className="grid-line vertical line-2"></div>
+            <div className="grid-line horizontal line-1"></div>
+            <div className="grid-line horizontal line-2"></div>
+            
+            {/* Agent dots positioned at rule of thirds intersections */}
+            <div className={`${getDotClass(agentStatus.market)} market-dot`} title="Market Intelligence">
+              <span className="dot-label">Market</span>
             </div>
-          )}
+            
+            <div className={`${getDotClass(agentStatus.research)} research-dot`} title="Internal Research Analysis">
+              <span className="dot-label">Research</span>
+            </div>
+            
+            <div className={`${getDotClass(agentStatus.product)} product-dot`} title="Product Metrics & Analytics">
+              <span className="dot-label">Product</span>
+            </div>
+
+            {/* Connection lines */}
+            <svg className="connection-lines" viewBox="0 0 600 400">
+              {/* Line from Market to Research */}
+              <line 
+               x1="100" y1="67" 
+               x2="500" y2="200" 
+                className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
+              />
+              {/* Line from Research to Product */}
+              <line 
+               x1="500" y1="200" 
+                x2="300" y2="333" 
+                className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
+              />
+              {/* Line from Product back to Market (completing triangle) */}
+              <line 
+                x1="300" y1="333" 
+                x2="100" y2="67" 
+                className={`connection-line ${animationState.line3Drawn ? 'drawn' : ''}`}
+              />
+            </svg>
+
+            {/* Triangle appears when analysis is complete */}
+            {analysisComplete && (
+              <div className="completion-triangle">
+                <svg viewBox="0 0 100 100" className="triangle-svg">
+                  <polygon 
+                    points="50,15 85,75 15,75" 
+                    className="triangle-shape"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

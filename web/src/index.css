@@ -58,12 +58,20 @@ body {
   color: var(--text-secondary);
 }
 
+.main-content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+}
+
 .controls {
+  flex: 0 0 300px; /* Fixed width, smaller than grid */
   background: var(--surface);
   padding: 2rem;
   border-radius: 1rem;
-  margin-bottom: 3rem;
   border: 1px solid var(--border);
+  height: fit-content; /* Don't stretch to match grid height */
 }
 
 .input-group {
@@ -142,6 +150,23 @@ body {
   background: var(--border);
 }
 
+.rule-of-thirds-container {
+  flex: 1; /* Take remaining space, larger than controls */
+  display: flex;
+  justify-content: flex-start;
+}
+
+.rule-of-thirds-grid {
+  position: relative;
+  width: 100%;
+  max-width: 700px; /* Larger than before */
+  height: 467px; /* Maintain aspect ratio */
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
 .error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid var(--error-color);
@@ -149,22 +174,6 @@ body {
   padding: 1rem;
   border-radius: 0.5rem;
   margin-bottom: 2rem;
-}
-
-.rule-of-thirds-container {
-  display: flex;
-  justify-content: center;
-  margin: 3rem 0;
-}
-
-.rule-of-thirds-grid {
-  position: relative;
-  width: 600px;
-  height: 400px;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 1rem;
-  overflow: hidden;
 }
 
 /* Grid lines */
@@ -495,6 +504,16 @@ body {
   
   .header h1 {
     font-size: 2rem;
+  }
+  
+  .main-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .controls {
+    flex: none;
+    width: 100%;
   }
   
   .rule-of-thirds-grid {
