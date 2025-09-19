@@ -222,7 +222,7 @@ body {
 
 .dot.active {
   border: 2px solid rgba(255, 255, 255, 0.8);
-  animation: pixelatedFade 2s ease-in-out infinite;
+  animation: gradualFillIn 45s ease-out forwards;
 }
 
 .dot.complete {
@@ -363,31 +363,36 @@ body {
 }
 
 /* Animations */
-@keyframes pixelatedFade {
+@keyframes gradualFillIn {
   0% { 
-    opacity: 0.3;
-    filter: contrast(0.5) saturate(0.3);
+    opacity: 0.1;
+    filter: contrast(0.2) saturate(0.1) brightness(0.3);
     box-shadow: 0 0 0 rgba(255, 255, 255, 0);
   }
-  25% { 
+  20% { 
+    opacity: 0.3;
+    filter: contrast(0.4) saturate(0.3) brightness(0.5);
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+  40% { 
     opacity: 0.5;
-    filter: contrast(0.7) saturate(0.6);
+    filter: contrast(0.6) saturate(0.5) brightness(0.7);
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
   }
-  50% { 
-    opacity: 0.8;
-    filter: contrast(0.9) saturate(0.8);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  60% { 
+    opacity: 0.7;
+    filter: contrast(0.8) saturate(0.7) brightness(0.85);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   }
-  75% { 
-    opacity: 1;
-    filter: contrast(1.2) saturate(1.2);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+  80% { 
+    opacity: 0.9;
+    filter: contrast(1.0) saturate(0.9) brightness(0.95);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
   }
   100% { 
-    opacity: 0.3;
-    filter: contrast(0.5) saturate(0.3);
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    opacity: 1;
+    filter: contrast(1.2) saturate(1.2) brightness(1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
   }
 }
 
