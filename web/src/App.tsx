@@ -155,11 +155,6 @@ function App() {
                 setTimeout(() => {
                   setAnalysisComplete(true);
                 }, 300);
-                }));
-                
-                setTimeout(() => {
-                  setAnalysisComplete(true);
-                }, 300);
               }, 1500);
             }, 500);
           }, 1500);
