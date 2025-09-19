@@ -209,6 +209,20 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.dot::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 .dot-label {
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -222,12 +236,21 @@ body {
 
 .dot.active {
   border: 2px solid rgba(255, 255, 255, 0.8);
-  animation: gradualFillIn 45s ease-out forwards;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.dot.active::before {
+  opacity: 1;
+  animation: spin-border 2s linear infinite;
 }
 
 .dot.complete {
   border: 2px solid rgba(255, 255, 255, 0.9);
   animation: completeGlow 0.6s ease-out;
+}
+
+.dot.complete::before {
+  opacity: 0;
 }
 
 .dot.failed {
@@ -363,37 +386,9 @@ body {
 }
 
 /* Animations */
-@keyframes gradualFillIn {
-  0% { 
-    opacity: 0.1;
-    filter: contrast(0.2) saturate(0.1) brightness(0.3);
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-  }
-  20% { 
-    opacity: 0.3;
-    filter: contrast(0.4) saturate(0.3) brightness(0.5);
-    box-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
-  }
-  40% { 
-    opacity: 0.5;
-    filter: contrast(0.6) saturate(0.5) brightness(0.7);
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-  }
-  60% { 
-    opacity: 0.7;
-    filter: contrast(0.8) saturate(0.7) brightness(0.85);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-  }
-  80% { 
-    opacity: 0.9;
-    filter: contrast(1.0) saturate(0.9) brightness(0.95);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-  }
-  100% { 
-    opacity: 1;
-    filter: contrast(1.2) saturate(1.2) brightness(1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-  }
+@keyframes spin-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes completeGlow {
