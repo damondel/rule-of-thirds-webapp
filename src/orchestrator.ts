@@ -10,6 +10,8 @@
 import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { OpenAIApi } from '@azure/openai';
+import { AzureKeyCredential } from '@azure/core-auth';
 import { ExternalSignalsAgent } from './agents/externalSignalsAgent.js';
 import { InternalResearchAgent } from './agents/internalResearchAgent.js';
 import { ProductMetricsAgent } from './agents/productMetricsAgent.js';
@@ -30,24 +32,56 @@ export class RuleOfThirdsOrchestrator {
     private internalAgent: InternalResearchAgent;
     private productAgent: ProductMetricsAgent;
     private startTime: number;
+    private azureOpenAI: OpenAIApi | null = null;
 
     constructor(config: any = {}) {
         this.config = {
             retries: config.retries || 2,
             timeout: config.timeout || 30000,
             outputDir: config.outputDir || './outputs',
-            openaiApiKey: config.openaiApiKey || process.env.OPENAI_API_KEY,
-            llmModel: config.llmModel || 'gpt-4o-mini',
+            azureOpenAIEndpoint: config.azureOpenAIEndpoint || process.env.AZURE_OPENAI_ENDPOINT,
+            azureOpenAIApiKey: config.azureOpenAIApiKey || process.env.AZURE_OPENAI_API_KEY,
+            azureOpenAIDeploymentName: config.azureOpenAIDeploymentName || process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
+            azureOpenAIApiVersion: config.azureOpenAIApiVersion || process.env.AZURE_OPENAI_API_VERSION || '2024-02-15-preview',
             enableLlmSynthesis: config.enableLlmSynthesis !== false, // Default to true
             ...config
         };
         
-        // Initialize OpenAI client if API key is provided
-        this.openai = null;
-        if (this.config.openaiApiKey) {
+        // Initialize Azure OpenAI client if credentials are provided
+        if (this.config.azureOpenAIEndpoint && this.config.azureOpenAIApiKey && this.config.azureOpenAIDeploymentName) {
             try {
-                this.openai = new OpenAI({
-                    apiKey: this.config.openaiApiKey
+                this.azureOpenAI = new OpenAIApi(
+                    this.config.azureOpenAIEndpoint,
+                    new AzureKeyCredential(this.config.azureOpenAIApiKey),
+                    {
+                        apiVersion: this.config.azureOpenAIApiVersion
+                    }
+                );
+                log('🤖 Azure OpenAI client initialized for LLM synthesis');
+            } catch (error) {
+                log('⚠️  Failed to initialize Azure OpenAI client:', error.message);
+            }
+        } else {
+            const missingVars = [];
+            if (!this.config.azureOpenAIEndpoint) missingVars.push('AZURE_OPENAI_ENDPOINT');
+            if (!this.config.azureOpenAIApiKey) missingVars.push('AZURE_OPENAI_API_KEY');
+            if (!this.config.azureOpenAIDeploymentName) missingVars.push('AZURE_OPENAI_DEPLOYMENT_NAME');
+            
+            if (missingVars.length > 0) {
+                log(`⚠️  Missing Azure OpenAI configuration: ${missingVars.join(', ')} - LLM synthesis will be skipped`);
+            }
+        }
+        
+        // Initialize agents with configuration
+        this.externalAgent = new ExternalSignalsAgent(config.external || {});
+        this.internalAgent = new InternalResearchAgent(config.internal || {});
+        this.productAgent = new ProductMetricsAgent(config.product || {});
+        
+        log('🎯 Rule of Thirds Orchestrator initializing...');
+        
+        this.startTime = Date.now();
+    }
+
                 });
                 log('🤖 OpenAI client initialized for LLM synthesis');
             } catch (error) {
@@ -259,9 +293,9 @@ export class RuleOfThirdsOrchestrator {
         
         // Call LLM for synthesis if available
         let llmSynthesis = null;
-        if (this.config.enableLlmSynthesis && this.openai) {
+        if (this.config.enableLlmSynthesis && this.azureOpenAI) {
             try {
-                log('🤖 Calling LLM for strategic synthesis...');
+                log('🤖 Calling Azure OpenAI for strategic synthesis...');
                 llmSynthesis = await this.callLlmApi(enrichedPrompt);
                 log('✅ LLM synthesis completed');
             } catch (error) {
@@ -370,18 +404,19 @@ export class RuleOfThirdsOrchestrator {
     }
     
     /**
-     * Call OpenAI API for LLM synthesis
+     * Call Azure OpenAI API for LLM synthesis
      */
     async callLlmApi(prompt: string): Promise<any> {
-        if (!this.openai) {
-            throw new Error('OpenAI client not initialized');
+        if (!this.azureOpenAI) {
+            throw new Error('Azure OpenAI client not initialized');
         }
         
         const startTime = Date.now();
         
         try {
-            const completion = await this.openai.chat.completions.create({
-                model: this.config.llmModel,
+            const completion = await this.azureOpenAI.getChatCompletions(
+                this.config.azureOpenAIDeploymentName,
+                {
                 messages: [
                     {
                         role: 'system',
@@ -392,22 +427,23 @@ export class RuleOfThirdsOrchestrator {
                         content: prompt
                     }
                 ],
-                max_tokens: 4000,
+                maxTokens: 4000,
                 temperature: 0.7
-            });
+                }
+            );
             
             const executionTime = Date.now() - startTime;
             
             return {
-                content: completion.choices[0]?.message?.content || 'No response generated',
-                model: completion.model,
+                content: completion.choices[0]?.message?.content || 'No response generated', 
+                model: this.config.azureOpenAIDeploymentName,
                 usage: completion.usage,
                 executionTime,
                 timestamp: new Date().toISOString()
             };
             
         } catch (error) {
-            throw new Error(`OpenAI API call failed: ${error.message}`);
+            throw new Error(`Azure OpenAI API call failed: ${error.message}`);
         }
     }
     

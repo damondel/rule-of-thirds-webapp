@@ -25,7 +25,10 @@ export class RuleOfThirdsHttpServer {
         try {
             console.log('🔧 Initializing RuleOfThirdsOrchestrator...');
             this.orchestrator = new RuleOfThirdsOrchestrator({
-                openaiApiKey: process.env.OPENAI_API_KEY,
+                azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+                azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+                azureOpenAIDeploymentName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
+                azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION,
                 enableLlmSynthesis: true
             });
             console.log('✅ RuleOfThirdsOrchestrator initialized successfully');
