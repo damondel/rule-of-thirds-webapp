@@ -501,6 +501,59 @@ body {
   color: var(--text-secondary);
 }
 
+/* LLM Synthesis Styles */
+.llm-synthesis {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.llm-synthesis h4 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.synthesis-content {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.synthesis-text {
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.synthesis-text p {
+  margin-bottom: 1rem;
+}
+
+.synthesis-text p:last-child {
+  margin-bottom: 0;
+}
+
+.synthesis-meta {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: right;
+}
+
+.synthesis-meta small {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.synthesis-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .app {

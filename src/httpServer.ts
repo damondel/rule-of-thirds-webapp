@@ -24,7 +24,10 @@ export class RuleOfThirdsHttpServer {
         
         try {
             console.log('🔧 Initializing RuleOfThirdsOrchestrator...');
-            this.orchestrator = new RuleOfThirdsOrchestrator();
+            this.orchestrator = new RuleOfThirdsOrchestrator({
+                openaiApiKey: process.env.OPENAI_API_KEY,
+                enableLlmSynthesis: true
+            });
             console.log('✅ RuleOfThirdsOrchestrator initialized successfully');
         } catch (error) {
             console.error('❌ Failed to initialize RuleOfThirdsOrchestrator:', error);
@@ -100,6 +103,7 @@ export class RuleOfThirdsHttpServer {
                     timestamp: results.timestamp,
                     topic: results.topic,
                     productArea: results.productArea,
+                    insights: results.insights,
                     signals: {
                         external: {
                             status: results.signals?.external?.status || 'failed',
