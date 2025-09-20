@@ -82,27 +82,6 @@ export class RuleOfThirdsOrchestrator {
         this.startTime = Date.now();
     }
 
-                });
-                log('🤖 OpenAI client initialized for LLM synthesis');
-            } catch (error) {
-                log('⚠️  Failed to initialize OpenAI client:', error.message);
-            }
-        } else {
-            log('⚠️  No OpenAI API key provided - LLM synthesis will be skipped');
-        }
-        
-        // Initialize agents with configuration
-        this.externalAgent = new ExternalSignalsAgent(config.external || {});
-        this.internalAgent = new InternalResearchAgent(config.internal || {});
-        this.productAgent = new ProductMetricsAgent(config.product || {});
-        
-                log('🎯 Rule of Thirds Orchestrator initializing...');
-        
-        this.startTime = Date.now();
-        
-        // Configuration setup
-    }
-
     /**
      * Public accessors for individual agents (for MCP tool handlers)
      */
