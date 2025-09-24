@@ -233,25 +233,25 @@ function App() {
       <div className="main-content">
         <div className="controls">
           <div className="input-group">
-            <label htmlFor="topic">Product or Technology</label>
+            <label htmlFor="topic">Azure Product or Service</label>
             <input
               id="topic"
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g., Azure OpenAI, Microsoft Copilot, Teams collaboration"
+              placeholder="e.g., Azure OpenAI Service, Azure Container Apps, Microsoft Copilot"
               disabled={isAnalyzing}
             />
           </div>
           
           <div className="input-group">
-            <label htmlFor="focus">Analysis Focus (Optional)</label>
+            <label htmlFor="focus">Business Focus (Optional)</label>
             <input
               id="focus"
               type="text"
               value={focusArea}
               onChange={(e) => setFocusArea(e.target.value)}
-              placeholder="e.g., enterprise adoption, developer experience, pricing strategy"
+              placeholder="e.g., enterprise readiness, developer adoption, competitive positioning"
               disabled={isAnalyzing}
             />
           </div>

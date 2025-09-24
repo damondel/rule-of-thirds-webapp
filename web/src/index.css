@@ -1,13 +1,13 @@
 :root {
-  --primary-color: #2563eb;
+  --primary-color: #64748b;
   --success-color: #10b981;
   --error-color: #ef4444;
   --warning-color: #f59e0b;
   --background: #0f172a;
   --surface: #1e293b;
   --surface-light: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
   --border: #475569;
   --grid-line: rgba(148, 163, 184, 0.3);
   
@@ -47,10 +47,7 @@ body {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--success-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
 }
 
 .header p {
@@ -129,12 +126,13 @@ body {
 }
 
 .analyze-btn {
-  background: var(--primary-color);
+  background: var(--surface-light);
   color: white;
+  border: 1px solid var(--border);
 }
 
 .analyze-btn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: var(--border);
   transform: translateY(-1px);
 }
 
@@ -395,8 +393,8 @@ body {
 }
 
 .triangle-shape {
-  fill: rgba(37, 99, 235, 0.15);
-  stroke: var(--primary-color);
+  fill: rgba(148, 163, 184, 0.15);
+  stroke: var(--text-secondary);
   stroke-width: 3;
   animation: trianglePulse 2s ease-in-out infinite;
 }
