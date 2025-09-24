@@ -63,6 +63,11 @@ function App() {
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [agentMessages, setAgentMessages] = useState<{[key: string]: string}>({
+    market: '',
+    research: '',
+    product: ''
+  });
 
   const handleAnalyze = async () => {
     if (!topic.trim()) {
@@ -74,6 +79,11 @@ function App() {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
     setResults(null);
+    setAgentMessages({
+      market: '',
+      research: '',
+      product: ''
+    });
     
     // Reset animation state
     setAgentStatus({
@@ -94,10 +104,25 @@ function App() {
     });
 
     try {
-      // Start triangular animation - Market first
+      // Start all agents in parallel with status messages
       setTimeout(() => {
-        setAgentStatus(prev => ({ ...prev, market: 'active' }));
-        setAnimationState(prev => ({ ...prev, marketActive: true }));
+        setAgentStatus(prev => ({ 
+          ...prev, 
+          market: 'active',
+          research: 'active', 
+          product: 'active'
+        }));
+        setAnimationState(prev => ({ 
+          ...prev, 
+          marketActive: true,
+          researchActive: true,
+          productActive: true
+        }));
+        setAgentMessages({
+          market: 'Analyzing news articles, industry reports, and social media trends...',
+          research: 'Scanning internal documents, research files, and meeting notes...',
+          product: 'Collecting usage metrics, performance data, and user analytics...'
+        });
       }, 500);
 
       const response = await fetch('/api/orchestrate', {
@@ -118,9 +143,9 @@ function App() {
       const result: AnalysisResult = await response.json();
       setResults(result);
 
-      // Triangular animation progression
+      // Complete agents and draw connections as they finish
       setTimeout(() => {
-        // Market complete, draw line to research
+        // First agent completes
         setAgentStatus(prev => ({ ...prev, market: 'complete' }));
         setAnimationState(prev => ({ 
           ...prev, 
@@ -128,46 +153,36 @@ function App() {
           marketComplete: true, 
           line1Drawn: true 
         }));
+        setAgentMessages(prev => ({ ...prev, market: 'Market analysis complete' }));
         
-        // Start research animation
         setTimeout(() => {
-          setAgentStatus(prev => ({ ...prev, research: 'active' }));
-          setAnimationState(prev => ({ ...prev, researchActive: true }));
+          // Second agent completes
+          setAgentStatus(prev => ({ ...prev, research: 'complete' }));
+          setAnimationState(prev => ({ 
+            ...prev, 
+            researchActive: false, 
+            researchComplete: true, 
+            line2Drawn: true 
+          }));
+          setAgentMessages(prev => ({ ...prev, research: 'Research analysis complete' }));
           
           setTimeout(() => {
-            // Research complete, draw line to product
-            setAgentStatus(prev => ({ ...prev, research: 'complete' }));
+            // Third agent completes
+            setAgentStatus(prev => ({ ...prev, product: 'complete' }));
             setAnimationState(prev => ({ 
               ...prev, 
-              researchActive: false, 
-              researchComplete: true, 
-              line2Drawn: true 
+              productActive: false, 
+              productComplete: true,
+              line3Drawn: true
             }));
+            setAgentMessages(prev => ({ ...prev, product: 'Product analysis complete' }));
             
-            // Start product animation
             setTimeout(() => {
-              setAgentStatus(prev => ({ ...prev, product: 'active' }));
-              setAnimationState(prev => ({ ...prev, productActive: true }));
-              
-              setTimeout(() => {
-                // Product complete, draw final line back to market (completing triangle)
-                setAgentStatus(prev => ({ ...prev, product: 'complete' }));
-                setAnimationState(prev => ({ 
-                  ...prev, 
-                  productActive: false, 
-                  productComplete: true,
-                  line3Drawn: true
-                }));
-                
-                // Show completion triangle
-                setTimeout(() => {
-                  setAnalysisComplete(true);
-                }, 300);
-              }, 1500);
-            }, 500);
-          }, 1500);
-        }, 500);
-      }, 1500);
+              setAnalysisComplete(true);
+            }, 300);
+          }, 800);
+        }, 800);
+      }, 1200);
 
       if (result.success) {
         // Analysis successful - animations will handle the rest
@@ -215,6 +230,11 @@ function App() {
     setResults(null);
     setError(null);
     setIsAnalyzing(false);
+    setAgentMessages({
+      market: '',
+      research: '',
+      product: ''
+    });
   };
 
   return (
@@ -255,6 +275,37 @@ function App() {
               disabled={isAnalyzing}
             />
           </div>
+
+        {isAnalyzing && (
+          <div className="agent-status">
+            <h3>Analysis in Progress</h3>
+            <div className="status-grid">
+              <div className={`status-item ${agentStatus.market}`}>
+                <div className="status-header">
+                  <div className={`status-dot ${agentStatus.market}`}></div>
+                  <span>Market Intelligence</span>
+                </div>
+                <p className="status-message">{agentMessages.market}</p>
+              </div>
+              
+              <div className={`status-item ${agentStatus.research}`}>
+                <div className="status-header">
+                  <div className={`status-dot ${agentStatus.research}`}></div>
+                  <span>Internal Research</span>
+                </div>
+                <p className="status-message">{agentMessages.research}</p>
+              </div>
+              
+              <div className={`status-item ${agentStatus.product}`}>
+                <div className="status-header">
+                  <div className={`status-dot ${agentStatus.product}`}></div>
+                  <span>Product Analytics</span>
+                </div>
+                <p className="status-message">{agentMessages.product}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
           <div className="button-group">
             <button 

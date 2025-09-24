@@ -377,10 +377,11 @@ body {
 /* Completion triangle */
 .completion-triangle {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 80%;
+  transform: translate(-50%, -50%);
   z-index: 3;
   pointer-events: none;
   animation: triangleAppear 0.8s ease-out;
@@ -389,13 +390,13 @@ body {
 .triangle-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 20px rgba(37, 99, 235, 0.6));
+  filter: drop-shadow(0 0 10px rgba(148, 163, 184, 0.4));
 }
 
 .triangle-shape {
-  fill: rgba(148, 163, 184, 0.15);
+  fill: rgba(148, 163, 184, 0.1);
   stroke: var(--text-secondary);
-  stroke-width: 3;
+  stroke-width: 2;
   animation: trianglePulse 2s ease-in-out infinite;
 }
 
@@ -414,11 +415,11 @@ body {
 @keyframes triangleAppear {
   0% { 
     opacity: 0; 
-    transform: translate(-50%, -50%) scale(0) rotate(180deg); 
+    transform: translate(-50%, -50%) scale(0.8); 
   }
   100% { 
     opacity: 1; 
-    transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+    transform: translate(-50%, -50%) scale(1); 
   }
 }
 
@@ -501,6 +502,92 @@ body {
   color: var(--text-secondary);
 }
 
+/* Agent Status Styles */
+.agent-status {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.agent-status h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.status-item {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.status-item.active {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.status-item.complete {
+  border-color: var(--success-color);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.status-header span {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.status-dot.idle {
+  background: var(--surface-light);
+}
+
+.status-dot.active {
+  background: var(--warning-color);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.complete {
+  background: var(--success-color);
+}
+
+.status-dot.failed {
+  background: var(--error-color);
+}
+
+.status-message {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 /* LLM Synthesis Styles */
 .llm-synthesis {
   margin-top: 2rem;
