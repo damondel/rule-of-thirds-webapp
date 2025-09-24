@@ -10,7 +10,7 @@
 import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAIApi } from '@azure/openai';
+import { OpenAIClient } from '@azure/openai';
 import { AzureKeyCredential } from '@azure/core-auth';
 import { ExternalSignalsAgent } from './agents/externalSignalsAgent.js';
 import { InternalResearchAgent } from './agents/internalResearchAgent.js';
@@ -32,7 +32,7 @@ export class RuleOfThirdsOrchestrator {
     private internalAgent: InternalResearchAgent;
     private productAgent: ProductMetricsAgent;
     private startTime: number;
-    private azureOpenAI: OpenAIApi | null = null;
+    private azureOpenAI: OpenAIClient | null = null;
 
     constructor(config: any = {}) {
         this.config = {
@@ -50,7 +50,7 @@ export class RuleOfThirdsOrchestrator {
         // Initialize Azure OpenAI client if credentials are provided
         if (this.config.azureOpenAIEndpoint && this.config.azureOpenAIApiKey && this.config.azureOpenAIDeploymentName) {
             try {
-                this.azureOpenAI = new OpenAIApi(
+                this.azureOpenAI = new OpenAIClient(
                     this.config.azureOpenAIEndpoint,
                     new AzureKeyCredential(this.config.azureOpenAIApiKey),
                     {
