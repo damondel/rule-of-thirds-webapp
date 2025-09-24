@@ -216,6 +216,9 @@ async function main() {
         console.log('🔧 Server instance created, attempting to start...');
         await server.start();
         
+        // Keep the process alive to handle requests
+        await new Promise(() => {});
+        
         // Handle graceful shutdown
         process.on('SIGINT', () => {
             console.log('\n🛑 Shutting down HTTP server...');
