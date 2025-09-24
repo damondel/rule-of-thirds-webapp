@@ -395,8 +395,7 @@ export class RuleOfThirdsOrchestrator {
         try {
             const completion = await this.azureOpenAI.getChatCompletions(
                 this.config.azureOpenAIDeploymentName,
-                {
-                messages: [
+                [
                     {
                         role: 'system',
                         content: 'You are an expert strategic analyst specializing in product intelligence and market analysis. Provide comprehensive, actionable insights based on the Rule of Thirds methodology that combines external market signals, internal research, and product metrics.'
@@ -406,6 +405,7 @@ export class RuleOfThirdsOrchestrator {
                         content: prompt
                     }
                 ],
+                {
                 maxTokens: 4000,
                 temperature: 0.7
                 }
