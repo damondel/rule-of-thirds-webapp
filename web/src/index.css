@@ -379,23 +379,25 @@ body {
 /* Completion triangle */
 .completion-triangle {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 3;
+  pointer-events: none;
   animation: triangleAppear 0.8s ease-out;
 }
 
 .triangle-svg {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
   filter: drop-shadow(0 0 20px rgba(37, 99, 235, 0.6));
 }
 
 .triangle-shape {
-  fill: var(--primary-color);
-  stroke: #1d4ed8;
-  stroke-width: 2;
+  fill: rgba(37, 99, 235, 0.15);
+  stroke: var(--primary-color);
+  stroke-width: 3;
   animation: trianglePulse 2s ease-in-out infinite;
 }
 

@@ -321,7 +321,7 @@ function App() {
               <div className="completion-triangle">
                 <svg viewBox="0 0 100 100" className="triangle-svg">
                   <polygon 
-                    points="50,15 85,75 15,75" 
+                    points="16.67,16.67 83.33,50 50,83.33" 
                     className="triangle-shape"
                   />
                 </svg>
