@@ -231,7 +231,10 @@ async function main() {
 // Start server if this file is run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     console.log('🚀 Backend server script starting...');
-    main();
+    main().catch(error => {
+        console.error('💥 Failed to start server:', error);
+        process.exit(1);
+    });
 }
 
 export default RuleOfThirdsHttpServer;
