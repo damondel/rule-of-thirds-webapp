@@ -377,27 +377,25 @@ body {
 /* Completion triangle */
 .completion-triangle {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 80%;
-  height: 80%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 3;
   pointer-events: none;
-  animation: triangleAppear 0.8s ease-out;
+  animation: triangleAppear 1s ease-out;
 }
 
 .triangle-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 10px rgba(148, 163, 184, 0.4));
 }
 
 .triangle-shape {
-  fill: rgba(148, 163, 184, 0.1);
-  stroke: var(--text-secondary);
-  stroke-width: 2;
-  animation: trianglePulse 2s ease-in-out infinite;
+  fill: rgba(100, 116, 139, 0.15);
+  stroke: rgba(100, 116, 139, 0.4);
+  stroke-width: 1;
+  animation: trianglePulse 3s ease-in-out infinite;
 }
 
 /* Animations */
@@ -415,17 +413,21 @@ body {
 @keyframes triangleAppear {
   0% { 
     opacity: 0; 
-    transform: translate(-50%, -50%) scale(0.8); 
   }
   100% { 
     opacity: 1; 
-    transform: translate(-50%, -50%) scale(1); 
   }
 }
 
 @keyframes trianglePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%, 100% { 
+    fill-opacity: 0.15; 
+    stroke-opacity: 0.4; 
+  }
+  50% { 
+    fill-opacity: 0.25; 
+    stroke-opacity: 0.6; 
+  }
 }
 
 /* Results section */
@@ -502,8 +504,94 @@ body {
   color: var(--text-secondary);
 }
 
+/* Analysis Summary */
+.analysis-summary {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.analysis-summary h4 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.summary-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.summary-item {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.summary-item strong {
+  color: var(--text-primary);
+}
+
+/* Next Steps */
+.next-steps {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.next-steps h4 {
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.suggestion-card {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.suggestion-card h5 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.suggestion-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-card li {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.suggestion-card li::before {
+  content: '•';
+  color: var(--primary-color);
+  position: absolute;
+  left: 0;
+}
+
+.suggestion-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
 /* Agent Status Styles */
-.agent-status {
+.live-status {
   background: var(--surface);
   padding: 2rem;
   border-radius: 1rem;
@@ -511,7 +599,7 @@ body {
   margin-bottom: 2rem;
 }
 
-.agent-status h3 {
+.live-status h3 {
   text-align: center;
   margin-bottom: 1.5rem;
   color: var(--text-primary);
@@ -523,20 +611,21 @@ body {
   gap: 1.5rem;
 }
 
-.status-item {
+.status-card {
   background: var(--background);
   padding: 1.5rem;
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   transition: all 0.3s ease;
+  min-height: 200px;
 }
 
-.status-item.active {
+.status-card.active {
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-.status-item.complete {
+.status-card.complete {
   border-color: var(--success-color);
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
@@ -548,40 +637,74 @@ body {
   margin-bottom: 0.75rem;
 }
 
-.status-header span {
+.status-header h4 {
   font-weight: 600;
   color: var(--text-primary);
+  margin: 0;
+  font-size: 1rem;
 }
 
-.status-dot {
+.status-indicator {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   transition: all 0.3s ease;
 }
 
-.status-dot.idle {
+.status-indicator.idle {
   background: var(--surface-light);
 }
 
-.status-dot.active {
+.status-indicator.active {
   background: var(--warning-color);
   animation: pulse 2s ease-in-out infinite;
 }
 
-.status-dot.complete {
+.status-indicator.complete {
   background: var(--success-color);
 }
 
-.status-dot.failed {
+.status-indicator.failed {
   background: var(--error-color);
 }
 
-.status-message {
+.current-task {
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.4;
-  margin: 0;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.live-updates {
+  margin-bottom: 1rem;
+}
+
+.update-item {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.sources-info {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
