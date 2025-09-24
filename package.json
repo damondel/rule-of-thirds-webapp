@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/server.js",
-    "dev": "npm run build && npm run build:web && concurrently --kill-others \"node build/httpServer.js\" \"npm --prefix web run dev\"",
+    "dev": "npm run build && concurrently --kill-others \"node build/httpServer.js\" \"wait-on http://127.0.0.1:3001 && npm --prefix web run dev\"",
     "start:web": "tsc && node build/httpServer.js",
     "build:web": "npm run build && npm --prefix web install && npm --prefix web run build",
     "demo": "npm run build && node demo.js",
