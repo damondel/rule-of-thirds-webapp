@@ -181,11 +181,21 @@ export class RuleOfThirdsHttpServer {
 
     public async start(): Promise<void> {
         return new Promise((resolve) => {
-            this.app.listen(this.port, () => {
+            const server = this.app.listen(this.port, () => {
                 console.log(`🌐 Rule of Thirds HTTP Server running on http://localhost:${this.port}`);
                 console.log(`📊 API endpoints available at http://localhost:${this.port}/api/`);
                 console.log(`🎯 Web interface available at http://localhost:${this.port}`);
                 resolve();
+            });
+            
+            server.on('error', (error: any) => {
+                console.error('❌ Failed to start HTTP server:', error);
+                if (error.code === 'EADDRINUSE') {
+                    console.error(`🚫 Port ${this.port} is already in use. Please try a different port or stop the existing process.`);
+                } else if (error.code === 'EACCES') {
+                    console.error(`🚫 Permission denied to bind to port ${this.port}. Try using a port number above 1024.`);
+                }
+                reject(error);
             });
         });
     }
