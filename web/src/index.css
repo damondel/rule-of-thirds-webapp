@@ -363,39 +363,32 @@ body {
 .connection-line {
   stroke: var(--text-secondary);
   stroke-width: 3;
-  stroke-dasharray: 0;
-  stroke-dashoffset: 0;
-  transition: opacity 0.5s ease-in-out;
-  opacity: 0.8;
   opacity: 0;
+  transition: opacity 0.8s ease-in-out;
 }
 
 .connection-line.drawn {
   opacity: 0.8;
 }
 
-/* Completion triangle */
+/* Triangle fill when complete */
 .completion-triangle {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 0;
   pointer-events: none;
-  animation: triangleAppear 1s ease-out;
+  opacity: 0;
+  animation: triangleAppear 1.5s ease-out forwards;
 }
 
-.triangle-svg {
-  width: 100%;
-  height: 100%;
-}
-
-.triangle-shape {
-  fill: rgba(100, 116, 139, 0.15);
-  stroke: rgba(100, 116, 139, 0.4);
-  stroke-width: 1;
-  animation: trianglePulse 3s ease-in-out infinite;
+.triangle-fill {
+  fill: rgba(100, 116, 139, 0.1);
+  stroke: rgba(100, 116, 139, 0.3);
+  stroke-width: 2;
+  animation: trianglePulse 4s ease-in-out infinite;
 }
 
 /* Animations */

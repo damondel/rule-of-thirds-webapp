@@ -7,18 +7,6 @@ interface AgentStatus {
   research: 'idle' | 'active' | 'complete' | 'failed';
 }
 
-interface AnimationState {
-  marketActive: boolean;
-  productActive: boolean;
-  researchActive: boolean;
-  marketComplete: boolean;
-  productComplete: boolean;
-  researchComplete: boolean;
-  line1Drawn: boolean;
-  line2Drawn: boolean;
-  line3Drawn: boolean;
-}
-
 interface AnalysisResult {
   success: boolean;
   signals: {
@@ -49,34 +37,19 @@ function App() {
     product: 'idle',
     research: 'idle'
   });
-  const [animationState, setAnimationState] = useState<AnimationState>({
-    marketActive: false,
-    productActive: false,
-    researchActive: false,
-    marketComplete: false,
-    productComplete: false,
-    researchComplete: false,
-    line1Drawn: false,
-    line2Drawn: false,
-    line3Drawn: false
-  });
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showLiveUpdates, setShowLiveUpdates] = useState(false);
   const [liveUpdates, setLiveUpdates] = useState<{[key: string]: string[]}>({
     market: [],
     research: [],
     product: []
   });
-  const [currentSources, setCurrentSources] = useState<{[key: string]: string}>({
-    market: '',
-    research: '',
-    product: ''
-  });
 
   const handleAnalyze = async () => {
     if (!topic.trim()) {
-      setError('Please enter a topic to analyze');
+      setError('Please enter a product or service to analyze');
       return;
     }
 
@@ -84,77 +57,53 @@ function App() {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
     setResults(null);
-    setLiveUpdates({
-      market: [],
-      research: [],
-      product: []
-    });
-    setCurrentSources({
-      market: '',
-      research: '',
-      product: ''
-    });
+    setShowLiveUpdates(true);
     
-    // Reset animation state
+    // Reset states
     setAgentStatus({
       market: 'idle',
       product: 'idle',
       research: 'idle'
     });
-    setAnimationState({
-      marketActive: false,
-      productActive: false,
-      researchActive: false,
-      marketComplete: false,
-      productComplete: false,
-      researchComplete: false,
-      line1Drawn: false,
-      line2Drawn: false,
-      line3Drawn: false
+    setLiveUpdates({
+      market: [],
+      research: [],
+      product: []
     });
 
     try {
-      // Start all agents in parallel with live updates
+      // Start all agents in parallel
       setTimeout(() => {
-        setAgentStatus(prev => ({ 
-          ...prev, 
+        setAgentStatus({
           market: 'active',
           research: 'active', 
           product: 'active'
-        }));
-        setAnimationState(prev => ({ 
-          ...prev, 
-          marketActive: true,
-          researchActive: true,
-          productActive: true
-        }));
-        
-        // Simulate live updates for each agent
-        setCurrentSources({
-          market: 'Searching news articles and industry reports...',
-          research: 'Scanning internal documents and research files...',
-          product: 'Collecting usage metrics and performance data...'
         });
         
-        // Add progressive updates
-        setTimeout(() => {
-          setLiveUpdates(prev => ({
-            ...prev,
-            market: ['Found 12 news articles about AI Foundry', 'Analyzing TechCrunch coverage...'],
-            research: ['Scanning 8 internal documents', 'Processing meeting transcripts...'],
-            product: ['Collecting user engagement metrics', 'Analyzing feature adoption rates...']
-          }));
-        }, 1000);
-        
-        setTimeout(() => {
-          setLiveUpdates(prev => ({
-            ...prev,
-            market: [...prev.market, 'Processing industry analyst reports', 'Checking social media mentions...'],
-            research: [...prev.research, 'Found relevant user interview data', 'Extracting key insights...'],
-            product: [...prev.product, 'Gathering performance benchmarks', 'Analyzing user feedback scores...']
-          }));
-        }, 2500);
+        // Add initial updates
+        setLiveUpdates({
+          market: ['🔍 Searching news articles and industry reports...'],
+          research: ['📁 Scanning internal documents and research files...'],
+          product: ['📊 Collecting usage metrics and performance data...']
+        });
       }, 500);
+
+      // Progressive updates
+      setTimeout(() => {
+        setLiveUpdates(prev => ({
+          market: [...prev.market, '📰 Found 12 news articles about ' + topic, '🔍 Analyzing TechCrunch and industry coverage...'],
+          research: [...prev.research, '📄 Scanning 8 internal documents', '🎤 Processing meeting transcripts...'],
+          product: [...prev.product, '📈 Collecting user engagement metrics', '⚡ Analyzing feature adoption rates...']
+        }));
+      }, 1500);
+
+      setTimeout(() => {
+        setLiveUpdates(prev => ({
+          market: [...prev.market, '📊 Processing industry analyst reports', '🐦 Checking social media mentions...'],
+          research: [...prev.research, '💬 Found relevant user interview data', '🔍 Extracting key insights...'],
+          product: [...prev.product, '⚡ Gathering performance benchmarks', '📝 Analyzing user feedback scores...']
+        }));
+      }, 3000);
 
       const response = await fetch('/api/orchestrate', {
         method: 'POST',
@@ -174,50 +123,35 @@ function App() {
       const result: AnalysisResult = await response.json();
       setResults(result);
 
-      // Complete agents and draw connections as they finish
+      // Complete agents sequentially
       setTimeout(() => {
-        // First agent completes
         setAgentStatus(prev => ({ ...prev, market: 'complete' }));
-        setAnimationState(prev => ({ 
-          ...prev, 
-          marketActive: false, 
-          marketComplete: true, 
-          line1Drawn: true 
+        setLiveUpdates(prev => ({
+          ...prev,
+          market: [...prev.market, '✅ Market analysis complete - ' + (result.signals?.external?.signalCount || 0) + ' signals found']
         }));
-        setCurrentSources(prev => ({ ...prev, market: 'Market analysis complete - 5 signals found' }));
         
         setTimeout(() => {
-          // Second agent completes
           setAgentStatus(prev => ({ ...prev, research: 'complete' }));
-          setAnimationState(prev => ({ 
-            ...prev, 
-            researchActive: false, 
-            researchComplete: true, 
-            line2Drawn: true 
+          setLiveUpdates(prev => ({
+            ...prev,
+            research: [...prev.research, '✅ Research analysis complete - ' + (result.signals?.internal?.findingCount || 0) + ' findings']
           }));
-          setCurrentSources(prev => ({ ...prev, research: 'Research analysis complete - 0 findings' }));
           
           setTimeout(() => {
-            // Third agent completes
             setAgentStatus(prev => ({ ...prev, product: 'complete' }));
-            setAnimationState(prev => ({ 
-              ...prev, 
-              productActive: false, 
-              productComplete: true,
-              line3Drawn: true
+            setLiveUpdates(prev => ({
+              ...prev,
+              product: [...prev.product, '✅ Product analysis complete - ' + (result.signals?.product?.dataPointCount || 0) + ' data points']
             }));
-            setCurrentSources(prev => ({ ...prev, product: 'Product analysis complete - 56 data points' }));
             
             setTimeout(() => {
               setAnalysisComplete(true);
-            }, 300);
+              setShowLiveUpdates(false);
+            }, 800);
           }, 800);
         }, 800);
-      }, 1200);
-
-      if (result.success) {
-        // Analysis successful - animations will handle the rest
-      }
+      }, 1000);
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Analysis failed');
@@ -226,6 +160,7 @@ function App() {
         product: 'failed',
         research: 'failed'
       });
+      setShowLiveUpdates(false);
     } finally {
       setIsAnalyzing(false);
     }
@@ -246,30 +181,15 @@ function App() {
       product: 'idle',
       research: 'idle'
     });
-    setAnimationState({
-      marketActive: false,
-      productActive: false,
-      researchActive: false,
-      marketComplete: false,
-      productComplete: false,
-      researchComplete: false,
-      line1Drawn: false,
-      line2Drawn: false,
-      line3Drawn: false
-    });
     setAnalysisComplete(false);
     setResults(null);
     setError(null);
     setIsAnalyzing(false);
+    setShowLiveUpdates(false);
     setLiveUpdates({
       market: [],
       research: [],
       product: []
-    });
-    setCurrentSources({
-      market: '',
-      research: '',
-      product: ''
     });
   };
 
@@ -337,7 +257,7 @@ function App() {
             <div className="grid-line horizontal line-1"></div>
             <div className="grid-line horizontal line-2"></div>
             
-            {/* Agent dots positioned at rule of thirds intersections */}
+            {/* Agent dots */}
             <div className={`${getDotClass(agentStatus.market)} market-dot`} title="Market Intelligence">
               <span className="dot-label">Market</span>
             </div>
@@ -351,44 +271,39 @@ function App() {
             </div>
 
             {/* Connection lines */}
-            <svg className="connection-lines" viewBox="0 0 600 400">
-              {/* Line from Market to Research */}
+            <svg className="connection-lines" viewBox="0 0 700 467">
               <line 
-               x1="100" y1="67" 
-               x2="500" y2="200" 
-                className={`connection-line ${animationState.line1Drawn ? 'drawn' : ''}`}
+                x1="117" y1="78" 
+                x2="583" y2="234" 
+                className={`connection-line ${agentStatus.market === 'complete' ? 'drawn' : ''}`}
               />
-              {/* Line from Research to Product */}
               <line 
-               x1="500" y1="200" 
-                x2="300" y2="333" 
-                className={`connection-line ${animationState.line2Drawn ? 'drawn' : ''}`}
+                x1="583" y1="234" 
+                x2="350" y2="389" 
+                className={`connection-line ${agentStatus.research === 'complete' ? 'drawn' : ''}`}
               />
-              {/* Line from Product back to Market (completing triangle) */}
               <line 
-                x1="300" y1="333" 
-                x2="100" y2="67" 
-                className={`connection-line ${animationState.line3Drawn ? 'drawn' : ''}`}
+                x1="350" y1="389" 
+                x2="117" y2="78" 
+                className={`connection-line ${agentStatus.product === 'complete' ? 'drawn' : ''}`}
               />
             </svg>
 
-            {/* Triangle appears when analysis is complete */}
+            {/* Triangle fill when complete */}
             {analysisComplete && (
-              <div className="completion-triangle">
-                <svg viewBox="0 0 600 400" className="triangle-svg">
-                  <polygon 
-                    points="100,67 500,200 300,333" 
-                    className="triangle-shape"
-                  />
-                </svg>
-              </div>
+              <svg className="completion-triangle" viewBox="0 0 700 467">
+                <polygon 
+                  points="117,78 583,234 350,389" 
+                  className="triangle-fill"
+                />
+              </svg>
             )}
           </div>
         </div>
       </div>
 
-      {/* Live Status Updates - appears during analysis */}
-      {isAnalyzing && (
+      {/* Live Status Updates */}
+      {showLiveUpdates && (
         <div className="live-status">
           <h3>Analysis in Progress</h3>
           <div className="status-grid">
@@ -397,10 +312,9 @@ function App() {
                 <div className={`status-indicator ${agentStatus.market}`}></div>
                 <h4>Market Intelligence</h4>
               </div>
-              <p className="current-task">{currentSources.market}</p>
               <div className="live-updates">
                 {liveUpdates.market.map((update, index) => (
-                  <div key={index} className="update-item">• {update}</div>
+                  <div key={index} className="update-item">{update}</div>
                 ))}
               </div>
               <div className="sources-info">
@@ -413,10 +327,9 @@ function App() {
                 <div className={`status-indicator ${agentStatus.research}`}></div>
                 <h4>Internal Research</h4>
               </div>
-              <p className="current-task">{currentSources.research}</p>
               <div className="live-updates">
                 {liveUpdates.research.map((update, index) => (
-                  <div key={index} className="update-item">• {update}</div>
+                  <div key={index} className="update-item">{update}</div>
                 ))}
               </div>
               <div className="sources-info">
@@ -429,10 +342,9 @@ function App() {
                 <div className={`status-indicator ${agentStatus.product}`}></div>
                 <h4>Product Analytics</h4>
               </div>
-              <p className="current-task">{currentSources.product}</p>
               <div className="live-updates">
                 {liveUpdates.product.map((update, index) => (
-                  <div key={index} className="update-item">• {update}</div>
+                  <div key={index} className="update-item">{update}</div>
                 ))}
               </div>
               <div className="sources-info">
@@ -442,11 +354,11 @@ function App() {
           </div>
         </div>
       )}
+
       {results && (
         <div className="results-summary">
           <h3>Analysis Complete</h3>
           
-          {/* Summary of what was analyzed */}
           <div className="analysis-summary">
             <h4>What We Analyzed</h4>
             <div className="summary-grid">
@@ -518,22 +430,22 @@ function App() {
             </div>
           )}
           
-          {/* Next Steps Suggestions */}
           <div className="next-steps">
-            <h4>🎯 Suggested Next Steps</h4>
+            <h4>🎯 Suggested Customer Research Questions</h4>
             <div className="suggestions">
               <div className="suggestion-card">
-                <h5>Customer Research Questions</h5>
+                <h5>Discovery Questions for {topic}</h5>
                 <ul>
-                  <li>How are you currently evaluating AI model capabilities for your use case?</li>
-                  <li>What factors influence your decision when choosing between AI platforms?</li>
-                  <li>What challenges have you faced with existing AI development tools?</li>
-                  <li>How important is model catalog diversity in your AI strategy?</li>
+                  <li>How are you currently evaluating {topic} for your organization?</li>
+                  <li>What factors influence your decision when choosing solutions like {topic}?</li>
+                  <li>What challenges have you faced with existing tools in this space?</li>
+                  <li>How important is {focusArea || 'integration capability'} in your evaluation process?</li>
+                  <li>What would success look like for you with a solution like {topic}?</li>
                 </ul>
               </div>
               <div className="suggestion-card">
                 <h5>Further Analysis</h5>
-                <p>Consider running focused analyses on competitor positioning, pricing strategy, or developer experience to deepen insights.</p>
+                <p>Consider running focused analyses on competitor positioning, pricing strategy, or developer experience to deepen insights for {topic}.</p>
               </div>
             </div>
           </div>
