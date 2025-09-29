@@ -447,7 +447,7 @@ export class ExternalSignalsAgent {
             {
                 type: 'news_article',
                 title: `Breaking: Major Investment in ${topic} Solutions`,
-                content: `Venture capital firms announce $50M funding round for startups focusing on ${topic} innovation, signaling strong market confidence.`,
+                content: `Venture capital firms announce major funding round for startups focusing on ${topic} innovation, signaling strong market confidence.`,
                 source: 'Business News Daily',
                 url: 'https://example.com/news/2',
                 publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -457,7 +457,7 @@ export class ExternalSignalsAgent {
             {
                 type: 'news_article',
                 title: `Research Report: Consumer Adoption of ${topic} Accelerates`,
-                content: `New consumer research indicates 67% increase in ${topic} adoption over the past quarter, driven by improved user experience and cost reduction.`,
+                content: `New consumer research indicates significant increase in ${topic} adoption over the past quarter, driven by improved user experience and cost reduction.`,
                 source: 'Market Research Weekly',
                 url: 'https://example.com/news/3',
                 publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -484,7 +484,7 @@ export class ExternalSignalsAgent {
                 type: 'youtube_video',
                 title: `${topic} Explained: Complete Guide for ${productArea || 'Professionals'}`,
                 content: `Comprehensive tutorial covering ${topic} implementation, best practices, and real-world case studies. Perfect for teams looking to adopt ${topic} solutions.`,
-                channel: 'Tech Education Hub',
+                channel: 'Education Hub',
                 videoId: 'sim123456789',
                 url: 'https://www.youtube.com/watch?v=sim123456789',
                 publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
