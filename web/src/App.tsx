@@ -196,8 +196,20 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Rule of Thirds</h1>
-        <p>From scattered signals to a sharper product picture</p>
+        <div className="header-logo">
+          <svg viewBox="0 0 120 80" className="logo-triangle">
+            <line x1="20" y1="70" x2="60" y2="15" stroke="currentColor" strokeWidth="2" />
+            <line x1="60" y1="15" x2="100" y2="70" stroke="currentColor" strokeWidth="2" />
+            <line x1="100" y1="70" x2="20" y2="70" stroke="currentColor" strokeWidth="2" />
+            <circle cx="20" cy="70" r="6" fill="#ec4899" />
+            <circle cx="60" cy="15" r="6" fill="#06b6d4" />
+            <circle cx="100" cy="70" r="6" fill="#eab308" />
+          </svg>
+          <div className="header-text">
+            <h1>Rule of Thirds</h1>
+            <p>From scattered signals to a sharper product picture</p>
+          </div>
+        </div>
       </header>
 
       {error && (
