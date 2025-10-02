@@ -197,16 +197,15 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-logo">
-          <svg viewBox="0 0 120 80" className="logo-triangle">
-            <line x1="20" y1="70" x2="60" y2="15" stroke="currentColor" strokeWidth="2" />
-            <line x1="60" y1="15" x2="100" y2="70" stroke="currentColor" strokeWidth="2" />
-            <line x1="100" y1="70" x2="20" y2="70" stroke="currentColor" strokeWidth="2" />
-            <circle cx="20" cy="70" r="6" fill="#ec4899" />
-            <circle cx="60" cy="15" r="6" fill="#06b6d4" />
-            <circle cx="100" cy="70" r="6" fill="#eab308" />
+          <svg viewBox="0 0 200 180" className="logo-triangle">
+            <path d="M 100 20 L 180 160 L 20 160 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinejoin="miter"/>
           </svg>
           <div className="header-text">
-            <h1>Rule of Thirds</h1>
+            <h1>RULE OF THIRDS</h1>
             <p>From scattered signals to a sharper product picture</p>
           </div>
         </div>
@@ -271,15 +270,24 @@ function App() {
             
             {/* Agent dots */}
             <div className={`${getDotClass(agentStatus.market)} market-dot`} title="Market Intelligence">
-              <span className="dot-label">Market</span>
+              <div className="dot-content">
+                <span className="dot-emoji">📰</span>
+                <span className="dot-label">Market</span>
+              </div>
             </div>
-            
+
             <div className={`${getDotClass(agentStatus.research)} research-dot`} title="Internal Research Analysis">
-              <span className="dot-label">Research</span>
+              <div className="dot-content">
+                <span className="dot-emoji">💬</span>
+                <span className="dot-label">Research</span>
+              </div>
             </div>
-            
+
             <div className={`${getDotClass(agentStatus.product)} product-dot`} title="Product Metrics & Analytics">
-              <span className="dot-label">Product</span>
+              <div className="dot-content">
+                <span className="dot-emoji">📊</span>
+                <span className="dot-label">Product</span>
+              </div>
             </div>
 
             {/* Connection lines */}
