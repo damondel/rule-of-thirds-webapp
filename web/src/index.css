@@ -11,10 +11,10 @@
   --border: #475569;
   --grid-line: rgba(148, 163, 184, 0.3);
   
-  /* RGB-inspired agent colors */
-  --market-color: #3b82f6;      /* Blue */
-  --research-color: #ef4444;    /* Red */
-  --product-color: #10b981;     /* Green */
+  /* CMY-inspired agent colors */
+  --market-color: #06b6d4;      /* Cyan */
+  --research-color: #ec4899;    /* Magenta */
+  --product-color: #eab308;     /* Yellow */
 }
 
 * {
@@ -273,64 +273,64 @@ body {
 
 /* Specific colors for each agent */
 .market-dot {
-  background: #3b82f6 !important; /* Pure blue - RGB blue channel */
-  border-color: #1d4ed8 !important;
+  background: #06b6d4 !important; /* Cyan */
+  border-color: #0891b2 !important;
 }
 
 .market-dot.active {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
-  background: #3b82f6 !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6) !important;
+  background: #06b6d4 !important;
 }
 
 .market-dot.complete {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
-  background: #3b82f6 !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
+  background: #06b6d4 !important;
 }
 
 .research-dot {
-  background: #ef4444 !important; /* Pure red - RGB red channel */
-  border-color: #dc2626 !important;
+  background: #ec4899 !important; /* Magenta */
+  border-color: #db2777 !important;
 }
 
 .research-dot.active {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
-  background: #ef4444 !important;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6) !important;
+  background: #ec4899 !important;
 }
 
 .research-dot.complete {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
-  background: #ef4444 !important;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4) !important;
+  background: #ec4899 !important;
 }
 
 .product-dot {
-  background: #10b981 !important; /* Pure green - RGB green channel */
-  border-color: #059669 !important;
+  background: #eab308 !important; /* Yellow */
+  border-color: #ca8a04 !important;
 }
 
 .product-dot.active {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6) !important;
-  background: #10b981 !important;
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.6) !important;
+  background: #eab308 !important;
 }
 
 .product-dot.complete {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
-  background: #10b981 !important;
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.4) !important;
+  background: #eab308 !important;
 }
 
 /* Override any generic dot styles that might be interfering */
 .dot.idle.market-dot {
-  background: #3b82f6 !important;
-  border-color: #1d4ed8 !important;
+  background: #06b6d4 !important;
+  border-color: #0891b2 !important;
 }
 
 .dot.idle.research-dot {
-  background: #ef4444 !important;
-  border-color: #dc2626 !important;
+  background: #ec4899 !important;
+  border-color: #db2777 !important;
 }
 
 .dot.idle.product-dot {
-  background: #10b981 !important;
-  border-color: #059669 !important;
+  background: #eab308 !important;
+  border-color: #ca8a04 !important;
 }
 
 /* Position dots to form triangle */
