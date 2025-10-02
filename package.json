@@ -7,9 +7,10 @@
   "scripts": {
     "build": "tsc && npm --prefix web run build",
     "start": "node build/httpServer.js",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "npm run build && node build/httpServer.js",
     "dev:backend": "tsc && node build/httpServer.js",
-    "dev:frontend": "wait-on http://localhost:3001/api/health && npm --prefix web run dev"
+    "dev:frontend": "npm --prefix web run dev",
+    "dev:full": "concurrently \"npm run dev:backend\" \"wait-on http://localhost:3001/api/health && npm run dev:frontend\""
   },
   "keywords": [
     "rule-of-thirds",

@@ -18,7 +18,7 @@ export class RuleOfThirdsHttpServer {
     private orchestrator: RuleOfThirdsOrchestrator;
     private port: number;
 
-    constructor(port: number = 3001) {
+    constructor(port: number = parseInt(process.env.PORT || '3001')) {
         this.app = express();
         this.port = port;
         
@@ -221,8 +221,9 @@ async function main() {
         console.log('🚀 Backend server script starting...');
         console.log('📁 Current working directory:', process.cwd());
         console.log('📦 Node version:', process.version);
-        
-        const server = new RuleOfThirdsHttpServer(3001);
+
+        const port = parseInt(process.env.PORT || '3001');
+        const server = new RuleOfThirdsHttpServer(port);
         console.log('🔧 Server instance created, attempting to start...');
         await server.start();
         
