@@ -10,17 +10,14 @@
 import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAIClient } from '@azure/openai';
-import { AzureKeyCredential } from '@azure/core-auth';
+import OpenAI from 'openai';
 import { ExternalSignalsAgent } from './agents/externalSignalsAgent.js';
 import { InternalResearchAgent } from './agents/internalResearchAgent.js';
 import { ProductMetricsAgent } from './agents/productMetricsAgent.js';
 
-// Helper function to log only when not in MCP silent mode
+// Helper function for logging
 function log(...args: any[]): void {
-    if (!process.env.MCP_SILENT) {
-        console.log(...args);
-    }
+    console.log(...args);
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,44 +29,31 @@ export class RuleOfThirdsOrchestrator {
     private internalAgent: InternalResearchAgent;
     private productAgent: ProductMetricsAgent;
     private startTime: number;
-    private azureOpenAI: OpenAIClient | null = null;
+    private openai: OpenAI | null = null;
 
     constructor(config: any = {}) {
         this.config = {
             retries: config.retries || 2,
             timeout: config.timeout || 30000,
             outputDir: config.outputDir || './outputs',
-            azureOpenAIEndpoint: config.azureOpenAIEndpoint || process.env.AZURE_OPENAI_ENDPOINT,
-            azureOpenAIApiKey: config.azureOpenAIApiKey || process.env.AZURE_OPENAI_API_KEY,
-            azureOpenAIDeploymentName: config.azureOpenAIDeploymentName || process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
-            azureOpenAIApiVersion: config.azureOpenAIApiVersion || process.env.AZURE_OPENAI_API_VERSION || '2024-02-15-preview',
+            openaiApiKey: config.openaiApiKey || process.env.OPENAI_API_KEY,
+            openaiModel: config.openaiModel || process.env.OPENAI_MODEL || 'gpt-4o-mini',
             enableLlmSynthesis: config.enableLlmSynthesis !== false, // Default to true
             ...config
         };
         
-        // Initialize Azure OpenAI client if credentials are provided
-        if (this.config.azureOpenAIEndpoint && this.config.azureOpenAIApiKey && this.config.azureOpenAIDeploymentName) {
+        // Initialize OpenAI client if API key is provided
+        if (this.config.openaiApiKey) {
             try {
-                this.azureOpenAI = new OpenAIClient(
-                    this.config.azureOpenAIEndpoint,
-                    new AzureKeyCredential(this.config.azureOpenAIApiKey),
-                    {
-                        apiVersion: this.config.azureOpenAIApiVersion
-                    }
-                );
-                log('🤖 Azure OpenAI client initialized for LLM synthesis');
+                this.openai = new OpenAI({
+                    apiKey: this.config.openaiApiKey
+                });
+                log(`🤖 OpenAI client initialized for LLM synthesis (model: ${this.config.openaiModel})`);
             } catch (error) {
-                log('⚠️  Failed to initialize Azure OpenAI client:', error.message);
+                log('⚠️  Failed to initialize OpenAI client:', error.message);
             }
         } else {
-            const missingVars = [];
-            if (!this.config.azureOpenAIEndpoint) missingVars.push('AZURE_OPENAI_ENDPOINT');
-            if (!this.config.azureOpenAIApiKey) missingVars.push('AZURE_OPENAI_API_KEY');
-            if (!this.config.azureOpenAIDeploymentName) missingVars.push('AZURE_OPENAI_DEPLOYMENT_NAME');
-            
-            if (missingVars.length > 0) {
-                log(`⚠️  Missing Azure OpenAI configuration: ${missingVars.join(', ')} - LLM synthesis will be skipped`);
-            }
+            log('⚠️  Missing OPENAI_API_KEY - LLM synthesis will be skipped');
         }
         
         // Initialize agents with configuration
@@ -272,9 +256,9 @@ export class RuleOfThirdsOrchestrator {
         
         // Call LLM for synthesis if available
         let llmSynthesis = null;
-        if (this.config.enableLlmSynthesis && this.azureOpenAI) {
+        if (this.config.enableLlmSynthesis && this.openai) {
             try {
-                log('🤖 Calling Azure OpenAI for strategic synthesis...');
+                log('🤖 Calling OpenAI for strategic synthesis...');
                 llmSynthesis = await this.callLlmApi(enrichedPrompt);
                 log('✅ LLM synthesis completed');
             } catch (error) {
@@ -383,19 +367,19 @@ export class RuleOfThirdsOrchestrator {
     }
     
     /**
-     * Call Azure OpenAI API for LLM synthesis
+     * Call OpenAI API for LLM synthesis
      */
     async callLlmApi(prompt: string): Promise<any> {
-        if (!this.azureOpenAI) {
-            throw new Error('Azure OpenAI client not initialized');
+        if (!this.openai) {
+            throw new Error('OpenAI client not initialized');
         }
-        
+
         const startTime = Date.now();
-        
+
         try {
-            const completion = await this.azureOpenAI.getChatCompletions(
-                this.config.azureOpenAIDeploymentName,
-                [
+            const completion = await this.openai.chat.completions.create({
+                model: this.config.openaiModel,
+                messages: [
                     {
                         role: 'system',
                         content: 'You are an expert strategic analyst specializing in product intelligence and market analysis. Provide comprehensive, actionable insights based on the Rule of Thirds methodology that combines external market signals, internal research, and product metrics.'
@@ -405,24 +389,23 @@ export class RuleOfThirdsOrchestrator {
                         content: prompt
                     }
                 ],
-                {
-                maxTokens: 4000,
-                temperature: 0.7
-                }
-            );
-            
+                temperature: 0.7,
+                max_tokens: 4000,
+                top_p: 0.95
+            });
+
             const executionTime = Date.now() - startTime;
-            
+
             return {
-                content: completion.choices[0]?.message?.content || 'No response generated', 
-                model: this.config.azureOpenAIDeploymentName,
+                content: completion.choices[0]?.message?.content || 'No response generated',
+                model: this.config.openaiModel,
                 usage: completion.usage,
                 executionTime,
                 timestamp: new Date().toISOString()
             };
-            
+
         } catch (error) {
-            throw new Error(`Azure OpenAI API call failed: ${error.message}`);
+            throw new Error(`OpenAI API call failed: ${error.message}`);
         }
     }
     

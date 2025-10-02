@@ -1,39 +1,32 @@
 {
-  "name": "rule-of-thirds-mcp-server",
+  "name": "rule-of-thirds-web-app",
   "version": "1.0.0",
-  "description": "A Model Context Protocol server for Rule of Thirds signal orchestration",
+  "description": "A web application for Rule of Thirds signal orchestration and product intelligence",
   "type": "module",
-  "main": "build/server.js",
+  "main": "build/httpServer.js",
   "scripts": {
     "build": "tsc && npm --prefix web run build",
-    "start": "node build/server.js",
+    "start": "node build/httpServer.js",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "tsc && node build/httpServer.js",
-    "dev:frontend": "wait-on http://localhost:3001/api/health && npm --prefix web run dev",
-    "start:web": "tsc && node build/httpServer.js",
-    "build:web": "npm run build",
-    "demo": "npm run build && node demo.js",
-    "test": "npm run build && node test/basic-test.js"
+    "dev:frontend": "wait-on http://localhost:3001/api/health && npm --prefix web run dev"
   },
   "keywords": [
-    "mcp",
-    "model-context-protocol",
     "rule-of-thirds",
     "signal-orchestration",
     "product-intelligence",
     "external-signals",
     "internal-research",
-    "product-metrics"
+    "product-metrics",
+    "web-app"
   ],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "@azure/core-auth": "^1.5.0",
-    "@azure/openai": "^1.0.0-beta.12",
-    "@modelcontextprotocol/sdk": "^1.0.2",
     "express": "^4.18.2",
     "glob": "^10.3.10",
     "node-fetch": "^3.3.2",
+    "openai": "^4.104.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rss-parser": "^3.13.0"
