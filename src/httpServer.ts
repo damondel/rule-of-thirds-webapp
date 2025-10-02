@@ -180,14 +180,14 @@ export class RuleOfThirdsHttpServer {
     }
 
     public async start(): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const server = this.app.listen(this.port, () => {
                 console.log(`🌐 Rule of Thirds HTTP Server running on http://localhost:${this.port}`);
                 console.log(`📊 API endpoints available at http://localhost:${this.port}/api/`);
                 console.log(`🎯 Web interface available at http://localhost:${this.port}`);
                 resolve();
             });
-            
+
             server.on('error', (error: any) => {
                 console.error('❌ Failed to start HTTP server:', error);
                 if (error.code === 'EADDRINUSE') {
