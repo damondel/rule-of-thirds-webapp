@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc && npm --prefix web run build",
     "start": "node build/server.js",
-    "dev": "tsc && vite",
+    "dev": "npm --prefix web run dev",
     "start:web": "tsc && node build/httpServer.js",
     "build:web": "npm run build",
     "demo": "npm run build && node demo.js",
