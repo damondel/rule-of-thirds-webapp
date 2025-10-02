@@ -36,24 +36,43 @@ export class RuleOfThirdsOrchestrator {
             retries: config.retries || 2,
             timeout: config.timeout || 30000,
             outputDir: config.outputDir || './outputs',
+            // Support both standard OpenAI and Azure OpenAI
             openaiApiKey: config.openaiApiKey || process.env.OPENAI_API_KEY,
             openaiModel: config.openaiModel || process.env.OPENAI_MODEL || 'gpt-4o-mini',
+            azureOpenAIEndpoint: config.azureOpenAIEndpoint || process.env.AZURE_OPENAI_ENDPOINT,
+            azureOpenAIApiKey: config.azureOpenAIApiKey || process.env.AZURE_OPENAI_API_KEY,
+            azureOpenAIDeployment: config.azureOpenAIDeployment || process.env.AZURE_OPENAI_DEPLOYMENT,
             enableLlmSynthesis: config.enableLlmSynthesis !== false, // Default to true
             ...config
         };
         
-        // Initialize OpenAI client if API key is provided
-        if (this.config.openaiApiKey) {
+        // Initialize OpenAI client (supports both standard and Azure)
+        if (this.config.azureOpenAIEndpoint && this.config.azureOpenAIApiKey && this.config.azureOpenAIDeployment) {
+            // Azure OpenAI configuration
+            try {
+                this.openai = new OpenAI({
+                    apiKey: this.config.azureOpenAIApiKey,
+                    baseURL: `${this.config.azureOpenAIEndpoint}/openai/deployments/${this.config.azureOpenAIDeployment}`,
+                    defaultQuery: { 'api-version': '2024-08-01-preview' },
+                    defaultHeaders: { 'api-key': this.config.azureOpenAIApiKey }
+                });
+                log(`🤖 Azure OpenAI client initialized (deployment: ${this.config.azureOpenAIDeployment})`);
+            } catch (error) {
+                log('⚠️  Failed to initialize Azure OpenAI client:', error.message);
+            }
+        } else if (this.config.openaiApiKey) {
+            // Standard OpenAI configuration
             try {
                 this.openai = new OpenAI({
                     apiKey: this.config.openaiApiKey
                 });
-                log(`🤖 OpenAI client initialized for LLM synthesis (model: ${this.config.openaiModel})`);
+                log(`🤖 OpenAI client initialized (model: ${this.config.openaiModel})`);
             } catch (error) {
                 log('⚠️  Failed to initialize OpenAI client:', error.message);
             }
         } else {
-            log('⚠️  Missing OPENAI_API_KEY - LLM synthesis will be skipped');
+            log('⚠️  No OpenAI credentials provided - LLM synthesis will be skipped');
+            log('   Configure either OPENAI_API_KEY or AZURE_OPENAI_* variables');
         }
         
         // Initialize agents with configuration
@@ -378,7 +397,7 @@ export class RuleOfThirdsOrchestrator {
 
         try {
             const completion = await this.openai.chat.completions.create({
-                model: this.config.openaiModel,
+                model: this.config.azureOpenAIDeployment || this.config.openaiModel,
                 messages: [
                     {
                         role: 'system',

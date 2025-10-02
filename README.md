@@ -92,25 +92,52 @@ The application will be available at:
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
+**IMPORTANT**: Never commit your `.env` file to version control!
+
+1. **Copy the example file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Add your credentials** to `.env`
+
+### Azure OpenAI Setup (Recommended)
+
+If you're using Azure OpenAI:
 
 ```bash
-# OpenAI Configuration (optional - falls back to simulated data)
-OPENAI_API_KEY=your_openai_key
-OPENAI_MODEL=gpt-4o-mini
-
-# API Configuration (optional - falls back to simulated data)
-NEWS_API_KEY=your_newsapi_key
-YOUTUBE_API_KEY=your_youtube_key
+AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com
+AZURE_OPENAI_API_KEY=your-azure-api-key
+AZURE_OPENAI_DEPLOYMENT=your-deployment-name
 ```
 
-### API Setup
+Find these values in your [Azure Portal](https://portal.azure.com) under your OpenAI resource.
 
-The application works fully without API keys using simulated data. For production use:
+### Standard OpenAI (Alternative)
 
-1. **OpenAI API** - Get your key from [platform.openai.com](https://platform.openai.com/)
-2. **News API** - Get your key from [newsapi.org](https://newsapi.org/)
-3. **YouTube API** - Get your key from [Google Cloud Console](https://console.cloud.google.com/)
+If using OpenAI directly:
+
+```bash
+OPENAI_API_KEY=sk-your-key-here
+OPENAI_MODEL=gpt-4o-mini
+```
+
+### Security & Secrets Management
+
+For detailed information on managing secrets securely, especially for GitHub repositories, see **[SECURITY.md](./SECURITY.md)**.
+
+**Key points:**
+- ✅ `.env` is gitignored automatically
+- ✅ Use GitHub Secrets for CI/CD
+- ✅ Application works without API keys (simulated data)
+- ❌ Never commit API keys to git
+
+### Optional External APIs
+
+```bash
+NEWS_API_KEY=your-newsapi-key        # newsapi.org
+YOUTUBE_API_KEY=your-youtube-key     # console.cloud.google.com
+```
 
 ## 🛠️ Development
 

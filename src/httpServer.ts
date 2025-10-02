@@ -25,8 +25,13 @@ export class RuleOfThirdsHttpServer {
         try {
             console.log('🔧 Initializing RuleOfThirdsOrchestrator...');
             this.orchestrator = new RuleOfThirdsOrchestrator({
+                // Standard OpenAI
                 openaiApiKey: process.env.OPENAI_API_KEY,
                 openaiModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+                // Azure OpenAI
+                azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+                azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+                azureOpenAIDeployment: process.env.AZURE_OPENAI_DEPLOYMENT,
                 enableLlmSynthesis: true
             });
             console.log('✅ RuleOfThirdsOrchestrator initialized successfully');
@@ -173,7 +178,14 @@ export class RuleOfThirdsHttpServer {
         // Serve the React app for all other routes (SPA routing)
         this.app.get('*', (req, res) => {
             const webDistPath = join(__dirname, '../web/dist');
-            res.sendFile(join(webDistPath, 'index.html'));
+            const indexPath = join(webDistPath, 'index.html');
+
+            res.sendFile(indexPath, (err) => {
+                if (err) {
+                    console.error('Error serving index.html:', err.message);
+                    res.status(500).send('Frontend not built. Run: npm run build');
+                }
+            });
         });
     }
 
