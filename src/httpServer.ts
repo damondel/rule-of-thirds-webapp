@@ -1,14 +1,18 @@
 /**
  * HTTP Server for Rule of Thirds Web Interface
- * 
+ *
  * Provides a REST API wrapper around the RuleOfThirdsOrchestrator
  * and serves the static web application files.
  */
 
+import dotenv from 'dotenv';
 import express from 'express';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { RuleOfThirdsOrchestrator } from './orchestrator.js';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
