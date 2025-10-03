@@ -215,7 +215,7 @@ function App() {
                     opacity="0.9"/>
 
             {/* Top-right circle - transparent (outline only, breaks top-right) */}
-            <circle cx="130" cy="55" r="26"
+            <circle cx="135" cy="50" r="26"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
