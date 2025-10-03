@@ -137,8 +137,8 @@ Status: success
 ### API Configuration Status
 ```bash
 # Environment Variables Verified:
-NEWS_API_KEY=357bc3789ce34bd08bfcd020a95d4e3b ✅
-YOUTUBE_API_KEY=AIzaSyDpt66iCidguedRd46KD7ETIg1k23Pq9HQ ✅
+NEWS_API_KEY=[CONFIGURED] ✅
+YOUTUBE_API_KEY=[CONFIGURED] ✅
 ```
 
 ### Directory Structure Created
