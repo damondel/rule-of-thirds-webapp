@@ -206,26 +206,27 @@ function App() {
                   strokeLinejoin="miter"
                   opacity="0.8"/>
 
-            {/* Three circles - grayscale */}
-            {/* Top-left circle - dark filled */}
-            <circle cx="55" cy="45" r="32"
-                    fill="#2d3748"
-                    stroke="currentColor"
-                    strokeWidth="2"/>
-
-            {/* Top-right circle - light gray */}
-            <circle cx="140" cy="50" r="34"
-                    fill="none"
+            {/* Three overlapping circles with different fills */}
+            {/* Left circle - solid/opaque */}
+            <circle cx="65" cy="70" r="28"
+                    fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="2"
-                    opacity="0.5"/>
+                    opacity="0.9"/>
 
-            {/* Bottom circle - white/light */}
-            <circle cx="95" cy="95" r="30"
+            {/* Top-right circle - transparent (outline only) */}
+            <circle cx="130" cy="55" r="26"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.7"/>
+
+            {/* Bottom-right circle - mid-opacity */}
+            <circle cx="110" cy="90" r="27"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"/>
           </svg>
           <div className="header-text">
             <h1>RULE OF THIRDS</h1>
