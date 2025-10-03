@@ -10,15 +10,14 @@
 import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import OpenAI from 'openai';
 import { ExternalSignalsAgent } from './agents/externalSignalsAgent.js';
 import { InternalResearchAgent } from './agents/internalResearchAgent.js';
 import { ProductMetricsAgent } from './agents/productMetricsAgent.js';
 
-// Helper function to log only when not in MCP silent mode
+// Helper function for logging
 function log(...args: any[]): void {
-    if (!process.env.MCP_SILENT) {
-        console.log(...args);
-    }
+    console.log(...args);
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,25 +29,60 @@ export class RuleOfThirdsOrchestrator {
     private internalAgent: InternalResearchAgent;
     private productAgent: ProductMetricsAgent;
     private startTime: number;
+    private openai: OpenAI | null = null;
 
     constructor(config: any = {}) {
         this.config = {
             retries: config.retries || 2,
             timeout: config.timeout || 30000,
             outputDir: config.outputDir || './outputs',
+            // Support both standard OpenAI and Azure OpenAI
+            openaiApiKey: config.openaiApiKey || process.env.OPENAI_API_KEY,
+            openaiModel: config.openaiModel || process.env.OPENAI_MODEL || 'gpt-4o-mini',
+            azureOpenAIEndpoint: config.azureOpenAIEndpoint || process.env.AZURE_OPENAI_ENDPOINT,
+            azureOpenAIApiKey: config.azureOpenAIApiKey || process.env.AZURE_OPENAI_API_KEY,
+            azureOpenAIDeployment: config.azureOpenAIDeployment || process.env.AZURE_OPENAI_DEPLOYMENT,
+            enableLlmSynthesis: config.enableLlmSynthesis !== false, // Default to true
             ...config
         };
+        
+        // Initialize OpenAI client (supports both standard and Azure)
+        if (this.config.azureOpenAIEndpoint && this.config.azureOpenAIApiKey && this.config.azureOpenAIDeployment) {
+            // Azure OpenAI configuration
+            try {
+                this.openai = new OpenAI({
+                    apiKey: this.config.azureOpenAIApiKey,
+                    baseURL: `${this.config.azureOpenAIEndpoint}/openai/deployments/${this.config.azureOpenAIDeployment}`,
+                    defaultQuery: { 'api-version': '2024-08-01-preview' },
+                    defaultHeaders: { 'api-key': this.config.azureOpenAIApiKey }
+                });
+                log(`🤖 Azure OpenAI client initialized (deployment: ${this.config.azureOpenAIDeployment})`);
+            } catch (error) {
+                log('⚠️  Failed to initialize Azure OpenAI client:', error.message);
+            }
+        } else if (this.config.openaiApiKey) {
+            // Standard OpenAI configuration
+            try {
+                this.openai = new OpenAI({
+                    apiKey: this.config.openaiApiKey
+                });
+                log(`🤖 OpenAI client initialized (model: ${this.config.openaiModel})`);
+            } catch (error) {
+                log('⚠️  Failed to initialize OpenAI client:', error.message);
+            }
+        } else {
+            log('⚠️  No OpenAI credentials provided - LLM synthesis will be skipped');
+            log('   Configure either OPENAI_API_KEY or AZURE_OPENAI_* variables');
+        }
         
         // Initialize agents with configuration
         this.externalAgent = new ExternalSignalsAgent(config.external || {});
         this.internalAgent = new InternalResearchAgent(config.internal || {});
         this.productAgent = new ProductMetricsAgent(config.product || {});
         
-                log('🎯 Rule of Thirds Orchestrator initializing...');
+        log('🎯 Rule of Thirds Orchestrator initializing...');
         
         this.startTime = Date.now();
-        
-        // Configuration setup
     }
 
     /**
@@ -226,6 +260,35 @@ export class RuleOfThirdsOrchestrator {
         // Create cross-reference opportunities
         const crossReferenceInsights = this.identifyCrossReferences(signals);
         
+        // Prepare primary synthesis prompt with actual data
+        const primarySynthesisPrompt = templates.primarySynthesis
+            .replace(/\{topic\}/g, topic)
+            .replace(/\{productArea\}/g, productArea || 'General')
+            .replace(/\{totalSignals\}/g, metadata.totalSignals)
+            .replace(/\{executionTime\}/g, metadata.executionTime)
+            .replace(/\{externalSignalCount\}/g, signals.external.signalCount || 0)
+            .replace(/\{internalSignalCount\}/g, signals.internal.signalCount || 0)
+            .replace(/\{productSignalCount\}/g, signals.product.signalCount || 0);
+        
+        // Add actual signal data to the prompt
+        const enrichedPrompt = this.enrichPromptWithSignalData(primarySynthesisPrompt, signals);
+        
+        // Call LLM for synthesis if available
+        let llmSynthesis = null;
+        if (this.config.enableLlmSynthesis && this.openai) {
+            try {
+                log('🤖 Calling OpenAI for strategic synthesis...');
+                llmSynthesis = await this.callLlmApi(enrichedPrompt);
+                log('✅ LLM synthesis completed');
+            } catch (error) {
+                log('❌ LLM synthesis failed:', error.message);
+                llmSynthesis = {
+                    error: error.message,
+                    fallback: 'LLM synthesis unavailable - using template prompts for manual analysis'
+                };
+            }
+        }
+        
         // Generate executive summary
         const executiveSummary = {
             totalSignals: metadata.totalSignals,
@@ -271,12 +334,9 @@ export class RuleOfThirdsOrchestrator {
             executiveSummary,
             qualityAssessment,
             crossReferenceInsights,
+            llmSynthesis,
             llmPrompts: {
-                primarySynthesis: templates.primarySynthesis
-                    .replace(/\{topic\}/g, topic)
-                    .replace(/\{productArea\}/g, productArea || 'General')
-                    .replace(/\{totalSignals\}/g, metadata.totalSignals)
-                    .replace(/\{executionTime\}/g, metadata.executionTime),
+                primarySynthesis: enrichedPrompt,
                 crossReference: templates.crossReference,
                 actionableInsights: templates.actionableInsights,
                 riskAssessment: templates.riskAssessment
@@ -326,6 +386,89 @@ export class RuleOfThirdsOrchestrator {
     }
     
     /**
+     * Call OpenAI API for LLM synthesis
+     */
+    async callLlmApi(prompt: string): Promise<any> {
+        if (!this.openai) {
+            throw new Error('OpenAI client not initialized');
+        }
+
+        const startTime = Date.now();
+
+        try {
+            const completion = await this.openai.chat.completions.create({
+                model: this.config.azureOpenAIDeployment || this.config.openaiModel,
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are an expert strategic analyst specializing in product intelligence and market analysis. Provide comprehensive, actionable insights based on the Rule of Thirds methodology that combines external market signals, internal research, and product metrics.'
+                    },
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 4000,
+                top_p: 0.95
+            });
+
+            const executionTime = Date.now() - startTime;
+
+            return {
+                content: completion.choices[0]?.message?.content || 'No response generated',
+                model: this.config.openaiModel,
+                usage: completion.usage,
+                executionTime,
+                timestamp: new Date().toISOString()
+            };
+
+        } catch (error) {
+            throw new Error(`OpenAI API call failed: ${error.message}`);
+        }
+    }
+    
+    /**
+     * Enrich the synthesis prompt with actual signal data
+     */
+    enrichPromptWithSignalData(basePrompt: string, signals: any): string {
+        let enrichedPrompt = basePrompt;
+        
+        // Add external signals data
+        if (signals.external && signals.external.rankedSignals) {
+            const topExternalSignals = signals.external.rankedSignals.slice(0, 5);
+            const externalData = topExternalSignals.map(signal => 
+                `- ${signal.title} (${signal.source}): ${signal.content?.substring(0, 200)}...`
+            ).join('\n');
+            
+            enrichedPrompt += `\n\n## Top External Market Signals:\n${externalData}`;
+        }
+        
+        // Add internal research data
+        if (signals.internal && signals.internal.rankedFindings) {
+            const topInternalFindings = signals.internal.rankedFindings.slice(0, 5);
+            const internalData = topInternalFindings.map(finding => 
+                `- ${finding.source}: ${finding.content?.substring(0, 200)}...`
+            ).join('\n');
+            
+            enrichedPrompt += `\n\n## Top Internal Research Findings:\n${internalData}`;
+        }
+        
+        // Add product metrics data
+        if (signals.product && signals.product.insights) {
+            const trends = signals.product.insights.trends || [];
+            const topTrends = trends.slice(0, 5);
+            const metricsData = topTrends.map(trend => 
+                `- ${trend.metric}: ${trend.direction} (${trend.percentChange}% change)`
+            ).join('\n');
+            
+            enrichedPrompt += `\n\n## Key Product Metrics Trends:\n${metricsData}`;
+        }
+        
+        return enrichedPrompt;
+    }
+    
+    /**
      * Load LLM synthesis prompt templates
      */
     async loadTemplates() {
@@ -360,6 +503,9 @@ Analyze the comprehensive signals gathered for {topic} across all three sources:
 - Execution Time: {executionTime}ms
 - Topic: {topic}
 - Product Area: {productArea}
+- External Signals: {externalSignalCount}
+- Internal Research: {internalSignalCount}  
+- Product Metrics: {productSignalCount}
 
 ## Analysis Framework
 1. Identify convergent signals across all sources
@@ -368,7 +514,17 @@ Analyze the comprehensive signals gathered for {topic} across all three sources:
 4. Generate actionable insights for product strategy
 5. Provide confidence levels for each insight
 
-Focus on strategic implications and actionable recommendations.`,
+Focus on strategic implications and actionable recommendations.
+
+## Strategic Analysis Requirements
+Please provide:
+1. **Executive Summary** - Key findings in 2-3 sentences
+2. **Cross-Source Validation** - Where do signals align or conflict?
+3. **Strategic Opportunities** - What actions should be prioritized?
+4. **Risk Assessment** - What threats or gaps need attention?
+5. **Confidence Levels** - Rate each insight (High/Medium/Low confidence)
+
+Format your response with clear headings and actionable recommendations.`,
 
             crossReference: `# Cross-Reference Analysis
 
@@ -491,12 +647,37 @@ Prioritize by impact and likelihood with mitigation strategies.`
      */
     generateHumanReadableSummary(topic, productArea, data) {
         const date = new Date(data.metadata.timestamp);
+        
+        // Include LLM synthesis if available
+        let llmSynthesisSection = '';
+        if (data.insights.llmSynthesis && data.insights.llmSynthesis.content) {
+            llmSynthesisSection = `
+
+## 🤖 AI Strategic Synthesis
+
+${data.insights.llmSynthesis.content}
+
+*Generated by ${data.insights.llmSynthesis.model} in ${data.insights.llmSynthesis.executionTime}ms*
+
+---`;
+        } else if (data.insights.llmSynthesis && data.insights.llmSynthesis.error) {
+            llmSynthesisSection = `
+
+## ⚠️ AI Synthesis Status
+
+LLM synthesis failed: ${data.insights.llmSynthesis.error}
+
+${data.insights.llmSynthesis.fallback}
+
+---`;
+        }
+        
         return `# Rule of Thirds Analysis Summary
 
 **Topic**: ${topic}
 **Product Area**: ${productArea || 'General'}
 **Generated**: ${date.toLocaleString()}
-**Execution Time**: ${data.metadata.executionTime}ms
+**Execution Time**: ${data.metadata.executionTime}ms${llmSynthesisSection}
 
 ## Coverage Assessment
 - **Total Signals Collected**: ${data.metadata.totalSignals}
