@@ -199,7 +199,7 @@ function App() {
         <div className="header-logo">
           <svg viewBox="0 0 200 140" className="logo-triangle">
             {/* Triangle outline */}
-            <path d="M 20 110 L 160 15 L 150 110 Z"
+            <path d="M 10 110 L 150 15 L 140 110 Z"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
