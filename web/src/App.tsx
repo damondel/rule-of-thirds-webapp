@@ -293,18 +293,18 @@ function App() {
             {/* Connection lines */}
             <svg className="connection-lines" viewBox="0 0 700 467">
               <line
-                x1="50" y1="350"
-                x2="650" y2="80"
+                x1="117" y1="78"
+                x2="583" y2="234"
                 className={`connection-line ${agentStatus.market === 'complete' ? 'drawn' : ''}`}
               />
               <line
-                x1="650" y1="80"
-                x2="600" y2="350"
+                x1="583" y1="234"
+                x2="350" y2="389"
                 className={`connection-line ${agentStatus.research === 'complete' ? 'drawn' : ''}`}
               />
               <line
-                x1="600" y1="350"
-                x2="50" y2="350"
+                x1="350" y1="389"
+                x2="117" y2="78"
                 className={`connection-line ${agentStatus.product === 'complete' ? 'drawn' : ''}`}
               />
             </svg>
@@ -313,7 +313,7 @@ function App() {
             {analysisComplete && (
               <svg className="completion-triangle" viewBox="0 0 700 467">
                 <polygon
-                  points="50,350 650,80 600,350"
+                  points="117,78 583,234 350,389"
                   className="triangle-fill"
                 />
               </svg>
