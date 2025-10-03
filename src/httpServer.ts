@@ -88,7 +88,7 @@ export class RuleOfThirdsHttpServer {
         // Main orchestration endpoint
         this.app.post('/api/orchestrate', async (req, res) => {
             try {
-                const { topic, focus_area } = req.body;
+                const { topic, focus_area, config } = req.body;
 
                 if (!topic || typeof topic !== 'string' || topic.trim().length === 0) {
                     return res.status(400).json({
@@ -97,9 +97,39 @@ export class RuleOfThirdsHttpServer {
                 }
 
                 console.log(`🚀 Starting analysis for topic: "${topic}"${focus_area ? `, focus: "${focus_area}"` : ''}`);
+                
+                // Create orchestrator with custom configuration if provided
+                let orchestrator = this.orchestrator;
+                if (config && Object.keys(config).length > 0) {
+                    console.log('🔧 Using custom configuration for this analysis');
+                    orchestrator = new RuleOfThirdsOrchestrator({
+                        // Base configuration
+                        openaiApiKey: process.env.OPENAI_API_KEY,
+                        openaiModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+                        azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+                        azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+                        azureOpenAIDeployment: process.env.AZURE_OPENAI_DEPLOYMENT,
+                        enableLlmSynthesis: true,
+                        
+                        // Custom agent configurations
+                        external: {
+                            newsApiKey: config.apis?.newsApiKey || process.env.NEWS_API_KEY,
+                            youtubeApiKey: config.apis?.youtubeApiKey || process.env.YOUTUBE_API_KEY,
+                            rssSources: config.customRssFeeds || undefined
+                        },
+                        internal: {
+                            directories: config.researchDirectories || ['./processed-research', './research-outputs', './docs']
+                        },
+                        product: {
+                            amplitudeApiKey: config.apis?.amplitudeApiKey || process.env.AMPLITUDE_API_KEY,
+                            amplitudeSecretKey: config.apis?.amplitudeSecretKey || process.env.AMPLITUDE_SECRET_KEY,
+                            metricsEndpoints: config.telemetryEndpoints || undefined
+                        }
+                    });
+                }
 
                 const startTime = Date.now();
-                const results = await this.orchestrator.orchestrate(
+                const results = await orchestrator.orchestrate(
                     topic.trim(), 
                     focus_area && typeof focus_area === 'string' ? focus_area.trim() : null
                 );

@@ -1,6 +1,7 @@
 # User Interview Research Summary
 
 ## Interview Session 1 - Product Manager
+
 **Date:** September 25, 2025
 **Participant:** Sarah Johnson, Senior Product Manager
 **Topic:** AI-powered analytics and dashboard insights
@@ -27,6 +28,7 @@
 - Reduce manual reporting overhead through automation
 
 ## Interview Session 2 - Data Analyst
+
 **Date:** September 26, 2025  
 **Participant:** Michael Chen, Senior Data Analyst
 **Topic:** Analytics workflow and AI integration
@@ -50,6 +52,7 @@ Michael highlighted several critical gaps in current analytics capabilities:
 ### Success Metrics Discussion
 
 Michael emphasized that successful AI analytics should:
+
 - Reduce time-to-insight by at least 60%
 - Improve accuracy of trend predictions
 - Enable self-service analytics for non-technical users

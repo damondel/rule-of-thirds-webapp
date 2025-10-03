@@ -32,6 +32,19 @@ function App() {
   const [topic, setTopic] = useState('');
   const [focusArea, setFocusArea] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showAdvancedConfig, setShowAdvancedConfig] = useState(false);
+  
+  // Data source configuration
+  const [config, setConfig] = useState({
+    researchPaths: './processed-research,./research-outputs,./docs',
+    telemetryEndpoints: '',
+    customRssFeeds: '',
+    newsApiKey: '',
+    youtubeApiKey: '',
+    amplitudeApiKey: '',
+    amplitudeSecretKey: ''
+  });
+  
   const [agentStatus, setAgentStatus] = useState<AgentStatus>({
     market: 'idle',
     product: 'idle',
@@ -112,7 +125,18 @@ function App() {
         },
         body: JSON.stringify({
           topic: topic.trim(),
-          focus_area: focusArea.trim() || null
+          focus_area: focusArea.trim() || null,
+          config: {
+            researchDirectories: config.researchPaths.split(',').map(p => p.trim()).filter(p => p),
+            telemetryEndpoints: config.telemetryEndpoints.split(',').map(p => p.trim()).filter(p => p),
+            customRssFeeds: config.customRssFeeds.split(',').map(p => p.trim()).filter(p => p),
+            apis: {
+              newsApiKey: config.newsApiKey.trim() || undefined,
+              youtubeApiKey: config.youtubeApiKey.trim() || undefined,
+              amplitudeApiKey: config.amplitudeApiKey.trim() || undefined,
+              amplitudeSecretKey: config.amplitudeSecretKey.trim() || undefined
+            }
+          }
         })
       });
 
@@ -265,6 +289,104 @@ function App() {
               placeholder="e.g., enterprise readiness, developer adoption, competitive positioning"
               disabled={isAnalyzing}
             />
+          </div>
+
+          {/* Advanced Configuration Section */}
+          <div className="advanced-config">
+            <button 
+              type="button"
+              className="config-toggle"
+              onClick={() => setShowAdvancedConfig(!showAdvancedConfig)}
+              disabled={isAnalyzing}
+            >
+              ⚙️ {showAdvancedConfig ? 'Hide' : 'Show'} Data Source Configuration
+            </button>
+            
+            {showAdvancedConfig && (
+              <div className="config-panel">
+                <div className="config-section">
+                  <h4>📁 Research Document Locations</h4>
+                  <input
+                    type="text"
+                    value={config.researchPaths}
+                    onChange={(e) => setConfig(prev => ({...prev, researchPaths: e.target.value}))}
+                    placeholder="./processed-research,./research-outputs,./docs"
+                    disabled={isAnalyzing}
+                  />
+                  <small>Comma-separated paths to directories containing research files</small>
+                </div>
+                
+                <div className="config-section">
+                  <h4>📊 Analytics & Telemetry Endpoints</h4>
+                  <input
+                    type="text"
+                    value={config.telemetryEndpoints}
+                    onChange={(e) => setConfig(prev => ({...prev, telemetryEndpoints: e.target.value}))}
+                    placeholder="https://api.yourcompany.com/metrics,https://analytics.yourapp.com/api"
+                    disabled={isAnalyzing}
+                  />
+                  <small>Custom API endpoints for product metrics and telemetry data</small>
+                </div>
+                
+                <div className="config-section">
+                  <h4>📰 Custom RSS Feeds</h4>
+                  <input
+                    type="text"
+                    value={config.customRssFeeds}
+                    onChange={(e) => setConfig(prev => ({...prev, customRssFeeds: e.target.value}))}
+                    placeholder="https://techcrunch.com/feed,https://blog.yourcompany.com/feed"
+                    disabled={isAnalyzing}
+                  />
+                  <small>Industry-specific RSS feeds for market intelligence</small>
+                </div>
+                
+                <div className="config-section">
+                  <h4>🔑 API Keys (Optional - improves data quality)</h4>
+                  <div className="api-keys-grid">
+                    <div className="key-input">
+                      <label>News API Key</label>
+                      <input
+                        type="password"
+                        value={config.newsApiKey}
+                        onChange={(e) => setConfig(prev => ({...prev, newsApiKey: e.target.value}))}
+                        placeholder="Your newsapi.org API key"
+                        disabled={isAnalyzing}
+                      />
+                    </div>
+                    <div className="key-input">
+                      <label>YouTube API Key</label>
+                      <input
+                        type="password"
+                        value={config.youtubeApiKey}
+                        onChange={(e) => setConfig(prev => ({...prev, youtubeApiKey: e.target.value}))}
+                        placeholder="Your YouTube Data API key"
+                        disabled={isAnalyzing}
+                      />
+                    </div>
+                    <div className="key-input">
+                      <label>Amplitude API Key</label>
+                      <input
+                        type="password"
+                        value={config.amplitudeApiKey}
+                        onChange={(e) => setConfig(prev => ({...prev, amplitudeApiKey: e.target.value}))}
+                        placeholder="Your Amplitude API key"
+                        disabled={isAnalyzing}
+                      />
+                    </div>
+                    <div className="key-input">
+                      <label>Amplitude Secret</label>
+                      <input
+                        type="password"
+                        value={config.amplitudeSecretKey}
+                        onChange={(e) => setConfig(prev => ({...prev, amplitudeSecretKey: e.target.value}))}
+                        placeholder="Your Amplitude secret key"
+                        disabled={isAnalyzing}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="button-group">
