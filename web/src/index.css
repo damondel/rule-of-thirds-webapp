@@ -54,11 +54,11 @@ body {
 }
 
 .logo-triangle {
-  width: 100px;
-  height: 90px;
+  width: 140px;
+  height: 100px;
   color: var(--text-primary);
   flex-shrink: 0;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .header-text {

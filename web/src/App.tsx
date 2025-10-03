@@ -197,12 +197,35 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-logo">
-          <svg viewBox="0 0 300 180" className="logo-triangle">
-            <path d="M 30 140 L 270 30 L 260 140 Z"
+          <svg viewBox="0 0 200 140" className="logo-triangle">
+            {/* Triangle outline */}
+            <path d="M 30 120 L 170 25 L 160 120 Z"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinejoin="miter"/>
+                  strokeWidth="2"
+                  strokeLinejoin="miter"
+                  opacity="0.8"/>
+
+            {/* Three circles - grayscale */}
+            {/* Top-left circle - dark filled */}
+            <circle cx="55" cy="45" r="32"
+                    fill="#2d3748"
+                    stroke="currentColor"
+                    strokeWidth="2"/>
+
+            {/* Top-right circle - light gray */}
+            <circle cx="140" cy="50" r="34"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.5"/>
+
+            {/* Bottom circle - white/light */}
+            <circle cx="95" cy="95" r="30"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.7"/>
           </svg>
           <div className="header-text">
             <h1>RULE OF THIRDS</h1>
