@@ -197,8 +197,8 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-logo">
-          <svg viewBox="0 0 200 180" className="logo-triangle">
-            <path d="M 100 20 L 180 160 L 20 160 Z"
+          <svg viewBox="0 0 300 180" className="logo-triangle">
+            <path d="M 30 140 L 270 30 L 260 140 Z"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
@@ -292,19 +292,19 @@ function App() {
 
             {/* Connection lines */}
             <svg className="connection-lines" viewBox="0 0 700 467">
-              <line 
-                x1="117" y1="78" 
-                x2="583" y2="234" 
+              <line
+                x1="50" y1="350"
+                x2="650" y2="80"
                 className={`connection-line ${agentStatus.market === 'complete' ? 'drawn' : ''}`}
               />
-              <line 
-                x1="583" y1="234" 
-                x2="350" y2="389" 
+              <line
+                x1="650" y1="80"
+                x2="600" y2="350"
                 className={`connection-line ${agentStatus.research === 'complete' ? 'drawn' : ''}`}
               />
-              <line 
-                x1="350" y1="389" 
-                x2="117" y2="78" 
+              <line
+                x1="600" y1="350"
+                x2="50" y2="350"
                 className={`connection-line ${agentStatus.product === 'complete' ? 'drawn' : ''}`}
               />
             </svg>
@@ -312,8 +312,8 @@ function App() {
             {/* Triangle fill when complete */}
             {analysisComplete && (
               <svg className="completion-triangle" viewBox="0 0 700 467">
-                <polygon 
-                  points="117,78 583,234 350,389" 
+                <polygon
+                  points="50,350 650,80 600,350"
                   className="triangle-fill"
                 />
               </svg>
@@ -383,13 +383,19 @@ function App() {
             <h4>What We Analyzed</h4>
             <div className="summary-grid">
               <div className="summary-item">
-                <strong>Market Intelligence:</strong> News articles, industry reports, social media mentions
+                <strong>Market Intelligence:</strong> {results.signals.external.signalCount > 0 ?
+                  `Analyzed ${results.signals.external.signalCount} external signals from news sources, industry reports, and RSS feeds` :
+                  'No external signals found - check API credentials or add RSS feeds'}
               </div>
               <div className="summary-item">
-                <strong>Internal Research:</strong> Internal documents, meeting notes, research files
+                <strong>Internal Research:</strong> {results.signals.internal.findingCount > 0 ?
+                  `Processed ${results.signals.internal.findingCount} findings from internal documents and research files` :
+                  'No internal research files found - add documents to ./processed-research or ./research-outputs directories'}
               </div>
               <div className="summary-item">
-                <strong>Product Analytics:</strong> Usage metrics, performance data, user engagement
+                <strong>Product Analytics:</strong> {results.signals.product.dataPointCount > 0 ?
+                  `Collected ${results.signals.product.dataPointCount} data points from usage metrics and performance data` :
+                  'Product analytics data not available'}
               </div>
             </div>
           </div>
