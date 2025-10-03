@@ -206,23 +206,23 @@ function App() {
                   strokeLinejoin="miter"
                   opacity="0.8"/>
 
-            {/* Three overlapping circles with different fills */}
-            {/* Left circle - solid/opaque */}
-            <circle cx="65" cy="70" r="28"
+            {/* Three overlapping circles with different fills - breaking triangle boundaries */}
+            {/* Top-left circle - solid/opaque (breaks top-left) */}
+            <circle cx="55" cy="50" r="30"
                     fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.9"/>
 
-            {/* Top-right circle - transparent (outline only) */}
-            <circle cx="130" cy="55" r="26"
+            {/* Top-right circle - transparent (outline only, breaks top-right) */}
+            <circle cx="145" cy="50" r="28"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.7"/>
 
-            {/* Bottom-right circle - mid-opacity */}
-            <circle cx="110" cy="90" r="27"
+            {/* Bottom circle - mid-opacity (breaks bottom) */}
+            <circle cx="95" cy="100" r="29"
                     fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="2"
