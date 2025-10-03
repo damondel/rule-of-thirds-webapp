@@ -13,10 +13,10 @@
   --border: #475569;
   --grid-line: rgba(148, 163, 184, 0.3);
 
-  /* CMY-inspired agent colors */
-  --market-color: #06b6d4;      /* Cyan */
-  --research-color: #ec4899;    /* Magenta */
-  --product-color: #eab308;     /* Yellow */
+  /* CMY-inspired agent colors - desaturated */
+  --market-color: #3b82a8;      /* Muted cyan-blue */
+  --research-color: #c75589;    /* Muted magenta */
+  --product-color: #d4a84e;     /* Muted gold-yellow */
 }
 
 * {
@@ -288,8 +288,8 @@ body {
 }
 
 .dot.active {
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .dot.active::before {
@@ -314,64 +314,67 @@ body {
 
 /* Specific colors for each agent */
 .market-dot {
-  background: #06b6d4 !important; /* Cyan */
-  border-color: #0891b2 !important;
+  background: linear-gradient(135deg, #3b82a8 0%, #2d6a8f 100%) !important;
+  border-color: #2d6a8f !important;
 }
 
 .market-dot.active {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6) !important;
-  background: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 168, 0.3) !important;
+  background: linear-gradient(135deg, #3b82a8 0%, #2d6a8f 100%) !important;
 }
 
 .market-dot.complete {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
-  background: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 168, 0.25) !important;
+  background: linear-gradient(135deg, #3b82a8 0%, #2d6a8f 100%) !important;
 }
 
 .research-dot {
-  background: #ec4899 !important; /* Magenta */
-  border-color: #db2777 !important;
+  background: linear-gradient(135deg, #c75589 0%, #a94370 100%) !important;
+  border-color: #a94370 !important;
 }
 
 .research-dot.active {
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6) !important;
-  background: #ec4899 !important;
+  box-shadow: 0 2px 8px rgba(199, 85, 137, 0.3) !important;
+  background: linear-gradient(135deg, #c75589 0%, #a94370 100%) !important;
 }
 
 .research-dot.complete {
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4) !important;
-  background: #ec4899 !important;
+  box-shadow: 0 2px 8px rgba(199, 85, 137, 0.25) !important;
+  background: linear-gradient(135deg, #c75589 0%, #a94370 100%) !important;
 }
 
 .product-dot {
-  background: #eab308 !important; /* Yellow */
-  border-color: #ca8a04 !important;
+  background: linear-gradient(135deg, #d4a84e 0%, #b8903d 100%) !important;
+  border-color: #b8903d !important;
 }
 
 .product-dot.active {
-  box-shadow: 0 0 20px rgba(234, 179, 8, 0.6) !important;
-  background: #eab308 !important;
+  box-shadow: 0 2px 8px rgba(212, 168, 78, 0.3) !important;
+  background: linear-gradient(135deg, #d4a84e 0%, #b8903d 100%) !important;
 }
 
 .product-dot.complete {
-  box-shadow: 0 0 20px rgba(234, 179, 8, 0.4) !important;
-  background: #eab308 !important;
+  box-shadow: 0 2px 8px rgba(212, 168, 78, 0.25) !important;
+  background: linear-gradient(135deg, #d4a84e 0%, #b8903d 100%) !important;
 }
 
 /* Override any generic dot styles that might be interfering */
 .dot.idle.market-dot {
-  background: #06b6d4 !important;
-  border-color: #0891b2 !important;
+  background: linear-gradient(135deg, #3b82a8 0%, #2d6a8f 100%) !important;
+  border-color: #2d6a8f !important;
+  opacity: 0.7;
 }
 
 .dot.idle.research-dot {
-  background: #ec4899 !important;
-  border-color: #db2777 !important;
+  background: linear-gradient(135deg, #c75589 0%, #a94370 100%) !important;
+  border-color: #a94370 !important;
+  opacity: 0.7;
 }
 
 .dot.idle.product-dot {
-  background: #eab308 !important;
-  border-color: #ca8a04 !important;
+  background: linear-gradient(135deg, #d4a84e 0%, #b8903d 100%) !important;
+  border-color: #b8903d !important;
+  opacity: 0.7;
 }
 
 /* Position dots to form triangle */
