@@ -62,6 +62,11 @@ demo.js
 minimal-*.js
 *.old.*
 
+# Deployment documentation (contains sensitive examples)
+docs/deployment/
+*DEPLOYMENT*.md
+*CONTAINER_APPS*.md
+
 # Package manager files
 # Uncomment to ignore lock files if using different package managers across team
 # package-lock.json

@@ -116,13 +116,29 @@ export class RuleOfThirdsOrchestrator {
             // Ensure output directory exists
             await this.ensureOutputDirectory();
             
-            // Run all three agents in parallel with timeout and retry logic
-            log('\n⚡ Running agents in parallel...');
-            const results = await Promise.allSettled([
-                this.runWithRetry('external', () => this.externalAgent.gatherSignals(topic, productArea)),
-                this.runWithRetry('internal', () => this.internalAgent.analyzeResearch(topic, productArea)),
-                this.runWithRetry('product', () => this.productAgent.collectMetrics(topic, productArea))
-            ]);
+            // Run all three agents sequentially to manage quota usage
+            log('\n⚡ Running agents sequentially (quota management)...');
+            
+            // Agent 1: External Signals
+            log('   🔄 external agent (attempt 1/2)');
+            const extResult = await this.runWithRetry('external', () => this.externalAgent.gatherSignals(topic, productArea));
+            log('   ✅ external agent completed');
+            
+            // Agent 2: Internal Research  
+            log('   🔄 internal agent (attempt 1/2)');
+            const intResult = await this.runWithRetry('internal', () => this.internalAgent.analyzeResearch(topic, productArea));
+            log('   ✅ internal agent completed');
+            
+            // Agent 3: Product Metrics
+            log('   🔄 product agent (attempt 1/2)');
+            const prodResult = await this.runWithRetry('product', () => this.productAgent.collectMetrics(topic, productArea));
+            log('   ✅ product agent completed');
+            
+            const results = [
+                { status: 'fulfilled', value: extResult },
+                { status: 'fulfilled', value: intResult },
+                { status: 'fulfilled', value: prodResult }
+            ];
             
             // Process results and extract data
             const [externalResult, internalResult, productResult] = results;
@@ -137,10 +153,10 @@ export class RuleOfThirdsOrchestrator {
                 product: productResult.status === 'fulfilled'
             };
             
-            // Extract signal data (with fallbacks for failed agents)
-            const externalData = externalResult.status === 'fulfilled' ? externalResult.value : { status: 'failed', error: externalResult.reason?.message, signalCount: 0, data: [] };
-            const internalData = internalResult.status === 'fulfilled' ? internalResult.value : { status: 'failed', error: internalResult.reason?.message, signalCount: 0, data: [] };
-            const productData = productResult.status === 'fulfilled' ? productResult.value : { status: 'failed', error: productResult.reason?.message, signalCount: 0, data: [] };
+            // Extract signal data (all should be successful now)
+            const externalData = results[0].value;
+            const internalData = results[1].value;
+            const productData = results[2].value;
             
             // Calculate total signals
             const totalSignals = (externalData.signalCount || 0) + (internalData.signalCount || 0) + (productData.signalCount || 0);
