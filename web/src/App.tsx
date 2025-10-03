@@ -208,21 +208,21 @@ function App() {
 
             {/* Three overlapping circles with different fills - breaking triangle boundaries */}
             {/* Top-left circle - solid/opaque (breaks top-left) */}
-            <circle cx="55" cy="50" r="30"
+            <circle cx="65" cy="70" r="28"
                     fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.9"/>
 
             {/* Top-right circle - transparent (outline only, breaks top-right) */}
-            <circle cx="145" cy="50" r="28"
+            <circle cx="130" cy="55" r="26"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.7"/>
 
             {/* Bottom circle - mid-opacity (breaks bottom) */}
-            <circle cx="95" cy="100" r="29"
+            <circle cx="110" cy="90" r="27"
                     fill="currentColor"
                     stroke="currentColor"
                     strokeWidth="2"
