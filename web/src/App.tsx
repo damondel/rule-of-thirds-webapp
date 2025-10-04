@@ -292,112 +292,112 @@ function App() {
           </div>
 
           {/* Advanced Configuration Section */}
-          <div className="advanced-config">
-            <button 
-              type="button"
-              className="config-toggle"
-              onClick={() => setShowAdvancedConfig(!showAdvancedConfig)}
-              disabled={isAnalyzing}
-            >
-              ⚙️ {showAdvancedConfig ? 'Hide' : 'Show'} Data Source Configuration
-            </button>
-            
-            {showAdvancedConfig && (
-              <div className="config-panel">
-                <div className="config-section">
-                  <h4>📁 Research Document Locations</h4>
-                  <input
-                    type="text"
-                    value={config.researchPaths}
-                    onChange={(e) => setConfig(prev => ({...prev, researchPaths: e.target.value}))}
-                    placeholder="./processed-research,./research-outputs,./docs"
-                    disabled={isAnalyzing}
-                  />
-                  <small>Comma-separated paths to directories containing research files</small>
-                </div>
-                
-                <div className="config-section">
-                  <h4>📊 Analytics & Telemetry Endpoints</h4>
-                  <input
-                    type="text"
-                    value={config.telemetryEndpoints}
-                    onChange={(e) => setConfig(prev => ({...prev, telemetryEndpoints: e.target.value}))}
-                    placeholder="https://api.yourcompany.com/metrics,https://analytics.yourapp.com/api"
-                    disabled={isAnalyzing}
-                  />
-                  <small>Custom API endpoints for product metrics and telemetry data</small>
-                </div>
-                
-                <div className="config-section">
-                  <h4>📰 Custom RSS Feeds</h4>
-                  <input
-                    type="text"
-                    value={config.customRssFeeds}
-                    onChange={(e) => setConfig(prev => ({...prev, customRssFeeds: e.target.value}))}
-                    placeholder="https://techcrunch.com/feed,https://blog.yourcompany.com/feed"
-                    disabled={isAnalyzing}
-                  />
-                  <small>Industry-specific RSS feeds for market intelligence</small>
-                </div>
-                
-                <div className="config-section">
-                  <h4>🔑 API Keys (Optional - improves data quality)</h4>
-                  <div className="api-keys-grid">
-                    <div className="key-input">
-                      <label>News API Key</label>
-                      <input
-                        type="password"
-                        value={config.newsApiKey}
-                        onChange={(e) => setConfig(prev => ({...prev, newsApiKey: e.target.value}))}
-                        placeholder="Your newsapi.org API key"
-                        disabled={isAnalyzing}
-                      />
-                    </div>
-                    <div className="key-input">
-                      <label>YouTube API Key</label>
-                      <input
-                        type="password"
-                        value={config.youtubeApiKey}
-                        onChange={(e) => setConfig(prev => ({...prev, youtubeApiKey: e.target.value}))}
-                        placeholder="Your YouTube Data API key"
-                        disabled={isAnalyzing}
-                      />
-                    </div>
-                    <div className="key-input">
-                      <label>Amplitude API Key</label>
-                      <input
-                        type="password"
-                        value={config.amplitudeApiKey}
-                        onChange={(e) => setConfig(prev => ({...prev, amplitudeApiKey: e.target.value}))}
-                        placeholder="Your Amplitude API key"
-                        disabled={isAnalyzing}
-                      />
-                    </div>
-                    <div className="key-input">
-                      <label>Amplitude Secret</label>
-                      <input
-                        type="password"
-                        value={config.amplitudeSecretKey}
-                        onChange={(e) => setConfig(prev => ({...prev, amplitudeSecretKey: e.target.value}))}
-                        placeholder="Your Amplitude secret key"
-                        disabled={isAnalyzing}
-                      />
-                    </div>
+          <button
+            type="button"
+            className="config-toggle"
+            onClick={() => setShowAdvancedConfig(!showAdvancedConfig)}
+            disabled={isAnalyzing}
+          >
+            <span className="config-icon">⚙️</span>
+            <span>{showAdvancedConfig ? 'Hide' : 'Configure'} Data Sources</span>
+            <span className={`config-chevron ${showAdvancedConfig ? 'open' : ''}`}>›</span>
+          </button>
+
+          {showAdvancedConfig && (
+            <div className="config-panel">
+              <div className="config-section">
+                <h4><span className="config-emoji">\ud83d\udcc1</span> Research Document Locations</h4>
+                <input
+                  type="text"
+                  value={config.researchPaths}
+                  onChange={(e) => setConfig(prev => ({...prev, researchPaths: e.target.value}))}
+                  placeholder="./processed-research,./research-outputs"
+                  disabled={isAnalyzing}
+                />
+                <small>Comma-separated paths to directories containing research files</small>
+              </div>
+
+              <div className="config-section">
+                <h4><span className="config-emoji">\ud83d\udcca</span> Analytics & Telemetry Endpoints</h4>
+                <input
+                  type="text"
+                  value={config.telemetryEndpoints}
+                  onChange={(e) => setConfig(prev => ({...prev, telemetryEndpoints: e.target.value}))}
+                  placeholder="https://api.yourcompany.com/metrics"
+                  disabled={isAnalyzing}
+                />
+                <small>Custom API endpoints for product metrics and telemetry data</small>
+              </div>
+
+              <div className="config-section">
+                <h4><span className="config-emoji">\ud83d\udcf0</span> Custom RSS Feeds</h4>
+                <input
+                  type="text"
+                  value={config.customRssFeeds}
+                  onChange={(e) => setConfig(prev => ({...prev, customRssFeeds: e.target.value}))}
+                  placeholder="https://techcrunch.com/feed,https://blog.yourcompany.com/feed"
+                  disabled={isAnalyzing}
+                />
+                <small>Industry-specific RSS feeds for market intelligence</small>
+              </div>
+
+              <div className="config-section">
+                <h4><span className="config-emoji">\ud83d\udd11</span> API Keys <span className="optional-badge">Optional</span></h4>
+                <div className="api-keys-grid">
+                  <div className="key-input">
+                    <label>News API Key</label>
+                    <input
+                      type="password"
+                      value={config.newsApiKey}
+                      onChange={(e) => setConfig(prev => ({...prev, newsApiKey: e.target.value}))}
+                      placeholder="Your newsapi.org API key"
+                      disabled={isAnalyzing}
+                    />
+                  </div>
+                  <div className="key-input">
+                    <label>YouTube API Key</label>
+                    <input
+                      type="password"
+                      value={config.youtubeApiKey}
+                      onChange={(e) => setConfig(prev => ({...prev, youtubeApiKey: e.target.value}))}
+                      placeholder="Your YouTube Data API key"
+                      disabled={isAnalyzing}
+                    />
+                  </div>
+                  <div className="key-input">
+                    <label>Amplitude API Key</label>
+                    <input
+                      type="password"
+                      value={config.amplitudeApiKey}
+                      onChange={(e) => setConfig(prev => ({...prev, amplitudeApiKey: e.target.value}))}
+                      placeholder="Your Amplitude API key"
+                      disabled={isAnalyzing}
+                    />
+                  </div>
+                  <div className="key-input">
+                    <label>Amplitude Secret</label>
+                    <input
+                      type="password"
+                      value={config.amplitudeSecretKey}
+                      onChange={(e) => setConfig(prev => ({...prev, amplitudeSecretKey: e.target.value}))}
+                      placeholder="Your Amplitude secret key"
+                      disabled={isAnalyzing}
+                    />
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="button-group">
-            <button 
-              onClick={handleAnalyze} 
+            <button
+              onClick={handleAnalyze}
               disabled={isAnalyzing || !topic.trim()}
               className="analyze-btn"
             >
               {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
             </button>
-            
+
             {(results || error) && (
               <button onClick={resetAnalysis} className="reset-btn">
                 Reset
