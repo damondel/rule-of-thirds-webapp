@@ -37,7 +37,6 @@ function App() {
   // Data source configuration
   const [config, setConfig] = useState({
     researchPaths: './processed-research,./research-outputs,./docs',
-    telemetryEndpoints: '',
     customRssFeeds: '',
     newsApiKey: '',
     youtubeApiKey: '',
@@ -128,7 +127,6 @@ function App() {
           focus_area: focusArea.trim() || null,
           config: {
             researchDirectories: config.researchPaths.split(',').map(p => p.trim()).filter(p => p),
-            telemetryEndpoints: config.telemetryEndpoints.split(',').map(p => p.trim()).filter(p => p),
             customRssFeeds: config.customRssFeeds.split(',').map(p => p.trim()).filter(p => p),
             apis: {
               newsApiKey: config.newsApiKey.trim() || undefined,
@@ -315,18 +313,6 @@ function App() {
                   disabled={isAnalyzing}
                 />
                 <small>Comma-separated paths to directories containing research files</small>
-              </div>
-
-              <div className="config-section">
-                <h4><span className="config-emoji">📊</span> Analytics & Telemetry Endpoints</h4>
-                <input
-                  type="text"
-                  value={config.telemetryEndpoints}
-                  onChange={(e) => setConfig(prev => ({...prev, telemetryEndpoints: e.target.value}))}
-                  placeholder="https://api.yourcompany.com/metrics"
-                  disabled={isAnalyzing}
-                />
-                <small>Custom API endpoints for product metrics and telemetry data</small>
               </div>
 
               <div className="config-section">
