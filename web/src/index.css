@@ -100,9 +100,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-height: 467px;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .input-group {
@@ -807,41 +804,6 @@ body {
 }
 
 /* Responsive design */
-/* Smooth scrollbar for config panel */
-.config-panel::-webkit-scrollbar {
-  width: 6px;
-}
-
-.config-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.config-panel::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-.config-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-.controls::-webkit-scrollbar {
-  width: 6px;
-}
-
-.controls::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.controls::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-.controls::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
 @media (max-width: 768px) {
   .app {
     padding: 1rem;
@@ -868,7 +830,6 @@ body {
   .controls {
     flex: none;
     width: 100%;
-    max-height: none;
   }
 
   .rule-of-thirds-grid {
@@ -951,23 +912,16 @@ body {
   border-radius: 0.5rem;
   padding: 1.5rem;
   animation: expandPanel 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  max-height: 500px;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 @keyframes expandPanel {
   from {
     opacity: 0;
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    transform: scaleY(0.95);
   }
   to {
     opacity: 1;
-    max-height: 500px;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    transform: scaleY(1);
   }
 }
 
