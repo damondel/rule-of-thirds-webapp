@@ -13,6 +13,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 
+// Helper to resolve paths relative to project root
+function resolvePath(dirPath: string): string {
+    if (path.isAbsolute(dirPath)) {
+        return dirPath;
+    }
+    // Resolve relative to process.cwd() which should be project root
+    return path.resolve(process.cwd(), dirPath);
+}
+
 // Helper function to log only when not in MCP silent mode
 function log(...args: any[]): void {
     if (!process.env.MCP_SILENT) {
@@ -115,25 +124,33 @@ export class InternalResearchAgent {
      */
     async discoverResearchFiles(): Promise<string[]> {
         log('   🔍 Discovering research files...');
-        
+        log(`   📁 Working directory: ${process.cwd()}`);
+
         const allFiles: string[] = [];
-        
+
         for (const directory of this.config.directories) {
             try {
+                // Resolve directory to absolute path
+                const absoluteDir = resolvePath(directory);
+                log(`   📂 Checking directory: ${directory} -> ${absoluteDir}`);
+
                 // Check if directory exists
-                if (!fs.existsSync(directory)) {
-                    log(`   ⚠️  Directory not found: ${directory}`);
+                if (!fs.existsSync(absoluteDir)) {
+                    log(`   ⚠️  Directory not found: ${absoluteDir}`);
                     continue;
                 }
-                
+
                 // Build glob pattern for supported file types
                 const extensions = this.supportedExtensions.map(ext => ext.replace('.', '')).join(',');
-                const globPattern = `${directory}/**/*.{${extensions}}`;
-                
+                const globPattern = `${absoluteDir}/**/*.{${extensions}}`;
+                log(`   🔍 Glob pattern: ${globPattern}`);
+
                 const files = await glob(globPattern, {
                     ignore: this.config.excludePatterns.map((p: string) => `**/${p}/**`)
                 });
-                
+
+                log(`   📄 Found ${files.length} files matching pattern`);
+
                 // Filter by file size
                 const validFiles = files.filter(file => {
                     try {
@@ -143,15 +160,16 @@ export class InternalResearchAgent {
                         return false;
                     }
                 });
-                
+
                 allFiles.push(...validFiles);
-                log(`     📂 ${directory}: ${validFiles.length} files`);
-                
+                log(`     ✅ ${directory}: ${validFiles.length} valid files`);
+
             } catch (error) {
                 log(`   ⚠️  Error scanning directory ${directory}: ${(error as Error).message}`);
             }
         }
-        
+
+        log(`   📊 Total files discovered: ${allFiles.length}`);
         return [...new Set(allFiles)]; // Remove duplicates
     }
     
