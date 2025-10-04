@@ -306,7 +306,7 @@ function App() {
           {showAdvancedConfig && (
             <div className="config-panel">
               <div className="config-section">
-                <h4><span className="config-emoji">\ud83d\udcc1</span> Research Document Locations</h4>
+                <h4><span className="config-emoji">📁</span> Research Document Locations</h4>
                 <input
                   type="text"
                   value={config.researchPaths}
@@ -318,7 +318,7 @@ function App() {
               </div>
 
               <div className="config-section">
-                <h4><span className="config-emoji">\ud83d\udcca</span> Analytics & Telemetry Endpoints</h4>
+                <h4><span className="config-emoji">📊</span> Analytics & Telemetry Endpoints</h4>
                 <input
                   type="text"
                   value={config.telemetryEndpoints}
@@ -330,7 +330,7 @@ function App() {
               </div>
 
               <div className="config-section">
-                <h4><span className="config-emoji">\ud83d\udcf0</span> Custom RSS Feeds</h4>
+                <h4><span className="config-emoji">📰</span> Custom RSS Feeds</h4>
                 <input
                   type="text"
                   value={config.customRssFeeds}
@@ -342,7 +342,7 @@ function App() {
               </div>
 
               <div className="config-section">
-                <h4><span className="config-emoji">\ud83d\udd11</span> API Keys <span className="optional-badge">Optional</span></h4>
+                <h4><span className="config-emoji">🔑</span> API Keys <span className="optional-badge">Optional</span></h4>
                 <div className="api-keys-grid">
                   <div className="key-input">
                     <label>News API Key</label>
