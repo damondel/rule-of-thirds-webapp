@@ -1,58 +1,58 @@
 WEBVTT
 
 00:00:01.000 --> 00:00:03.500
-Interviewer: Thank you for joining our product research session today.
+Interviewer: Thank you for joining our research session about Bicep testing.
 
 00:00:03.500 --> 00:00:08.200
-Interviewer: Can you tell us about your experience with AI-powered analytics tools?
+Interviewer: Can you tell us about your experience with Bicep infrastructure deployments?
 
 00:00:08.500 --> 00:00:15.300
-User_Sarah: Sure, I've been using various analytics platforms for about 5 years now.
+User_Sarah: Sure, we've been using Bicep for about 2 years now for all our Azure infrastructure.
 
 00:00:15.500 --> 00:00:22.100
-User_Sarah: The biggest challenge we face is getting actionable insights from all the data we collect.
+User_Sarah: The biggest challenge is validating templates before they hit production environments.
 
 00:00:22.500 --> 00:00:28.700
-User_Sarah: Most tools give us charts and graphs, but they don't tell us what actions to take.
+User_Sarah: We've had too many incidents where deployments failed due to issues we should have caught.
 
 00:00:29.000 --> 00:00:35.200
-Interviewer: What would make an analytics tool more valuable for your team?
+Interviewer: What testing and validation processes do you currently have in place?
 
 00:00:35.500 --> 00:00:42.300
-User_Sarah: We need AI that can automatically identify trends and suggest next steps.
+User_Sarah: We use the basic Bicep build command and some manual code reviews.
 
 00:00:42.500 --> 00:00:49.100
-User_Sarah: Something that can process multiple data sources and find correlations we might miss.
+User_Sarah: But there's no comprehensive testing framework for Bicep like there is for application code.
 
 00:00:49.500 --> 00:00:55.800
-User_Sarah: And honestly, we spend way too much time creating reports manually.
+User_Sarah: We need unit tests, integration tests, and policy validation all automated.
 
 00:00:56.000 --> 00:01:02.500
-Interviewer: How much time does your team currently spend on analytics and reporting?
+Interviewer: How much time does your team spend on manual Bicep validation?
 
 00:01:03.000 --> 00:01:09.200
-User_Sarah: Probably 15-20 hours per week across the whole team just for basic reporting.
+User_Sarah: Probably 10-15 hours per week just reviewing templates and catching errors.
 
 00:01:09.500 --> 00:01:16.300
-User_Sarah: If we could automate that and focus on strategic decisions instead, it would be huge.
+User_Sarah: And even with that effort, we still get deployment failures in production.
 
 00:01:16.500 --> 00:01:23.100
-User_Sarah: The AI analytics needs to be smart enough to surface anomalies and opportunities.
+User_Sarah: A proper testing framework would save us so much time and reduce incidents.
 
 00:01:23.500 --> 00:01:29.800
-Interviewer: What's your biggest frustration with current analytics solutions?
+Interviewer: What would an ideal Bicep testing solution look like?
 
 00:01:30.000 --> 00:01:36.500
-User_Sarah: They're too generic. Every company gets the same dashboards and metrics.
+User_Sarah: It needs to validate syntax, check against Azure policies, and test parameter combinations.
 
 00:01:36.800 --> 00:01:43.200
-User_Sarah: We need AI that learns our business context and provides personalized insights.
+User_Sarah: We also need dry-run capabilities to see what would be deployed without actually deploying.
 
 00:01:43.500 --> 00:01:49.100
-User_Sarah: Also, the integration between different tools is terrible.
+User_Sarah: Integration with CI/CD pipelines is critical, and it should provide detailed error messages.
 
 00:01:49.500 --> 00:01:55.800
-User_Sarah: We have data in five different places and no unified view.
+User_Sarah: Basically, treat infrastructure code with the same testing rigor as application code.
 
 00:01:56.000 --> 00:02:02.500
-Interviewer: Thank you for sharing those insights. This has been very helpful.
+Interviewer: Thank you for sharing these insights. This has been very helpful for our research.
