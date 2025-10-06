@@ -412,25 +412,10 @@ export class InternalResearchAgent {
      */
     isRelevantContent(content: string, topic: any, productArea: any): boolean {
         if (!content || content.length < 100) return false; // Skip very short content
-        
-        const normalizedContent = content.toLowerCase();
-        const normalizedTopic = topic.toLowerCase();
-        const normalizedProductArea = productArea ? productArea.toLowerCase() : '';
-        
-        // Check for topic mentions
-        const topicMentions = normalizedContent.includes(normalizedTopic);
-        
-        // Check for product area mentions
-        const productMentions = normalizedProductArea ? 
-            normalizedContent.includes(normalizedProductArea) : false;
-        
-        // Check for related keywords
-        const topicKeywords = normalizedTopic.split(' ');
-        const keywordMatches = topicKeywords.some((keyword: any) => 
-            normalizedContent.includes(keyword)
-        );
-        
-        return topicMentions || productMentions || keywordMatches;
+
+        // Always include research files - they provide valuable context
+        // The ranking system will prioritize more relevant findings
+        return true;
     }
     
     /**
