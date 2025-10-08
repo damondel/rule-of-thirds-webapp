@@ -159,7 +159,7 @@ export class RuleOfThirdsOrchestrator {
             const productData = results[2].value;
             
             // Calculate total signals
-            const totalSignals = (externalData.signalCount || 0) + (internalData.signalCount || 0) + (productData.signalCount || 0);
+            const totalSignals = (externalData.signalCount || 0) + (internalData.findingCount || 0) + (productData.dataPointCount || 0);
             
             log(`\n📊 Orchestration Results:`);
             log(`   ✅ Successful Agents: ${successfulAgents}/${totalAgents}`);
@@ -283,8 +283,8 @@ export class RuleOfThirdsOrchestrator {
             .replace(/\{totalSignals\}/g, metadata.totalSignals)
             .replace(/\{executionTime\}/g, metadata.executionTime)
             .replace(/\{externalSignalCount\}/g, signals.external.signalCount || 0)
-            .replace(/\{internalSignalCount\}/g, signals.internal.signalCount || 0)
-            .replace(/\{productSignalCount\}/g, signals.product.signalCount || 0);
+            .replace(/\{internalSignalCount\}/g, signals.internal.findingCount || 0)
+            .replace(/\{productSignalCount\}/g, signals.product.dataPointCount || 0);
         
         // Add actual signal data to the prompt
         const enrichedPrompt = this.enrichPromptWithSignalData(primarySynthesisPrompt, signals);
@@ -322,13 +322,13 @@ export class RuleOfThirdsOrchestrator {
                 },
                 {
                     source: 'internal',
-                    strength: signals.internal.signalCount > 10 ? 'strong' : signals.internal.signalCount > 3 ? 'medium' : 'weak',
-                    count: signals.internal.signalCount || 0
+                    strength: signals.internal.findingCount > 10 ? 'strong' : signals.internal.findingCount > 3 ? 'medium' : 'weak',
+                    count: signals.internal.findingCount || 0
                 },
                 {
                     source: 'product',
-                    strength: signals.product.signalCount > 20 ? 'strong' : signals.product.signalCount > 8 ? 'medium' : 'weak',
-                    count: signals.product.signalCount || 0
+                    strength: signals.product.dataPointCount > 20 ? 'strong' : signals.product.dataPointCount > 8 ? 'medium' : 'weak',
+                    count: signals.product.dataPointCount || 0
                 }
             ],
             keyTrends: [
@@ -368,8 +368,8 @@ export class RuleOfThirdsOrchestrator {
         
         // Check which sources have data
         const hasExternal = signals.external.status === 'success' && signals.external.signalCount > 0;
-        const hasInternal = signals.internal.status === 'success' && signals.internal.signalCount > 0;
-        const hasProduct = signals.product.status === 'success' && signals.product.signalCount > 0;
+        const hasInternal = signals.internal.status === 'success' && signals.internal.findingCount > 0;
+        const hasProduct = signals.product.status === 'success' && signals.product.dataPointCount > 0;
         
         if (hasExternal && hasInternal && hasProduct) {
             opportunities.push({
