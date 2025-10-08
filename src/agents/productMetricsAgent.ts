@@ -460,107 +460,306 @@ export class ProductMetricsAgent {
     
     async generateSimulatedUsageData(topic: any, productArea: any): Promise<any[]> {
         const data = [];
-        const baseUsage = Math.floor(Math.random() * 10000) + 1000;
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-            const dailyVariation = (Math.random() - 0.5) * 0.3; // ±15% variation
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'daily_active_users',
-                value: Math.floor(baseUsage * (1 + dailyVariation)),
-                topic: topic,
-                productArea: productArea
-            });
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'feature_usage',
-                value: Math.floor(baseUsage * 0.3 * (1 + dailyVariation)),
-                topic: topic,
-                productArea: productArea
-            });
+        const topicLower = topic.toLowerCase();
+
+        // Check if topic is related to Bicep/IaC/infrastructure
+        const isBicepRelated = topicLower.includes('bicep') || topicLower.includes('infrastructure') ||
+                               topicLower.includes('deployment') || topicLower.includes('iac') ||
+                               topicLower.includes('testing') || topicLower.includes('validation');
+
+        if (isBicepRelated) {
+            // Generate Bicep-specific usage metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+                const dailyVariation = (Math.random() - 0.5) * 0.2;
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'bicep_deployments_daily',
+                    value: Math.floor((150 + Math.random() * 50) * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Daily Bicep template deployments across all environments'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'validation_runs',
+                    value: Math.floor((320 + Math.random() * 80) * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Bicep template validation executions'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'deployment_failures',
+                    value: Math.floor((45 + Math.random() * 15) * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Failed Bicep deployments requiring rollback'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'template_modifications',
+                    value: Math.floor((85 + Math.random() * 25) * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Bicep template commits and updates'
+                });
+            }
+        } else {
+            // Generic usage metrics for non-Bicep topics
+            const baseUsage = Math.floor(Math.random() * 10000) + 1000;
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+                const dailyVariation = (Math.random() - 0.5) * 0.3;
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'daily_active_users',
+                    value: Math.floor(baseUsage * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'feature_usage',
+                    value: Math.floor(baseUsage * 0.3 * (1 + dailyVariation)),
+                    topic: topic,
+                    productArea: productArea
+                });
+            }
         }
-        
+
         return data;
     }
     
     async generateSimulatedPerformanceData(topic: any, productArea: any): Promise<any[]> {
         const data = [];
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'response_time_ms',
-                value: Math.floor(Math.random() * 500) + 200,
-                topic: topic,
-                productArea: productArea
-            });
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'error_rate_percent',
-                value: Math.random() * 5, // 0-5% error rate
-                topic: topic,
-                productArea: productArea
-            });
+        const topicLower = topic.toLowerCase();
+
+        const isBicepRelated = topicLower.includes('bicep') || topicLower.includes('infrastructure') ||
+                               topicLower.includes('deployment') || topicLower.includes('iac') ||
+                               topicLower.includes('testing') || topicLower.includes('validation');
+
+        if (isBicepRelated) {
+            // Bicep-specific performance metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'deployment_time_seconds',
+                    value: Math.floor(Math.random() * 180) + 90,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Average Bicep deployment execution time'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'validation_time_seconds',
+                    value: Math.floor(Math.random() * 15) + 5,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Average template validation time'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'deployment_failure_rate_percent',
+                    value: 28 + Math.random() * 8, // 28-36% failure rate
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Percentage of deployments that fail'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'rollback_time_minutes',
+                    value: Math.floor(Math.random() * 45) + 30,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Average time to rollback failed deployments'
+                });
+            }
+        } else {
+            // Generic performance metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'response_time_ms',
+                    value: Math.floor(Math.random() * 500) + 200,
+                    topic: topic,
+                    productArea: productArea
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'error_rate_percent',
+                    value: Math.random() * 5,
+                    topic: topic,
+                    productArea: productArea
+                });
+            }
         }
-        
+
         return data;
     }
     
     async generateSimulatedEngagementData(topic: any, productArea: any): Promise<any[]> {
         const data = [];
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'session_duration_minutes',
-                value: Math.floor(Math.random() * 30) + 10,
-                topic: topic,
-                productArea: productArea
-            });
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'page_views_per_session',
-                value: Math.floor(Math.random() * 10) + 3,
-                topic: topic,
-                productArea: productArea
-            });
+        const topicLower = topic.toLowerCase();
+
+        const isBicepRelated = topicLower.includes('bicep') || topicLower.includes('infrastructure') ||
+                               topicLower.includes('deployment') || topicLower.includes('iac') ||
+                               topicLower.includes('testing') || topicLower.includes('validation');
+
+        if (isBicepRelated) {
+            // Bicep developer engagement metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'active_engineers',
+                    value: Math.floor(Math.random() * 15) + 45,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Engineers actively working with Bicep templates'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'manual_review_hours',
+                    value: Math.floor(Math.random() * 5) + 10,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Hours spent on manual template reviews per day'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'environments_deployed',
+                    value: Math.floor(Math.random() * 2) + 3,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Number of environments with active deployments'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'policy_violations_detected',
+                    value: Math.floor(Math.random() * 12) + 8,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Azure Policy violations found in deployments'
+                });
+            }
+        } else {
+            // Generic engagement metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'session_duration_minutes',
+                    value: Math.floor(Math.random() * 30) + 10,
+                    topic: topic,
+                    productArea: productArea
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'page_views_per_session',
+                    value: Math.floor(Math.random() * 10) + 3,
+                    topic: topic,
+                    productArea: productArea
+                });
+            }
         }
-        
+
         return data;
     }
     
     async generateSimulatedConversionData(topic: any, productArea: any): Promise<any[]> {
         const data = [];
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'conversion_rate_percent',
-                value: Math.random() * 10 + 2, // 2-12% conversion rate
-                topic: topic,
-                productArea: productArea
-            });
-            
-            data.push({
-                date: date.toISOString().split('T')[0],
-                metric: 'revenue_usd',
-                value: Math.floor(Math.random() * 50000) + 10000,
-                topic: topic,
-                productArea: productArea
-            });
+        const topicLower = topic.toLowerCase();
+
+        const isBicepRelated = topicLower.includes('bicep') || topicLower.includes('infrastructure') ||
+                               topicLower.includes('deployment') || topicLower.includes('iac') ||
+                               topicLower.includes('testing') || topicLower.includes('validation');
+
+        if (isBicepRelated) {
+            // Bicep efficiency and success metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'deployment_success_rate_percent',
+                    value: 65 + Math.random() * 10, // 65-75% success rate
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Percentage of deployments that succeed on first attempt'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'time_saved_hours',
+                    value: Math.floor(Math.random() * 8) + 4,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Estimated engineer hours saved through automation'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'cost_savings_usd',
+                    value: Math.floor(Math.random() * 3000) + 1500,
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Cost savings from reduced failed deployments and rollbacks'
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'testing_coverage_percent',
+                    value: 45 + Math.random() * 15, // 45-60% coverage
+                    topic: topic,
+                    productArea: productArea,
+                    description: 'Percentage of templates with automated testing'
+                });
+            }
+        } else {
+            // Generic conversion metrics
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'conversion_rate_percent',
+                    value: Math.random() * 10 + 2,
+                    topic: topic,
+                    productArea: productArea
+                });
+
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    metric: 'revenue_usd',
+                    value: Math.floor(Math.random() * 50000) + 10000,
+                    topic: topic,
+                    productArea: productArea
+                });
+            }
         }
-        
+
         return data;
     }
     
